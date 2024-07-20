@@ -1,0 +1,2 @@
+/usr/bin/ar qc /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/devel/lib/libbsplinest.a  CMakeFiles/bsplinest.dir/src/Bspline.cpp.o
+/usr/bin/ranlib /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/devel/lib/libbsplinest.a
