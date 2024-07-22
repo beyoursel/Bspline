@@ -12,10 +12,12 @@
 #include <chrono>
 #include <boost/filesystem.hpp>
 #include <omp.h>
-#include <Bspline.h>
+#include <bspline.h>
 #include <queue>
 #include <limits>
 
+
+using namespace bspline;
 // 定义点的结构体
 struct Point {
     double x, y, z;
@@ -27,7 +29,7 @@ struct Point {
 };
 
 // 将pcl::PointCloud<pcl::PointXYZ>::Ptr转换为std::vector<Point>
-std::vector<Point> pclPointCloudToVector(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+std::vector<Point> PclPointCloudToVector(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
     std::vector<Point> points;
 
     for (const auto& pt : cloud->points) {
@@ -42,8 +44,8 @@ std::vector<Point> pclPointCloudToVector(pcl::PointCloud<pcl::PointXYZ>::Ptr clo
 }
 
 
-void visualizePointCloud(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
-    const vector<Eigen::Vector3d>& vertices,
+void VisualizePointCloud(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
+    const std::vector<Eigen::Vector3d>& vertices,
     pcl::PointCloud<pcl::PointXYZ>::Ptr  control_points)
 {
     pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
@@ -83,7 +85,7 @@ void visualizePointCloud(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
     }
 }
 
-float getAverageHeight(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+float GetAverageHeight(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
 
     float temp_height = 0.0;
     for (auto& point: cloud->points) {
@@ -152,7 +154,7 @@ void PassthroghFilter(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud , pcl::Poi
 }
 
 
-void VoxelDownsample(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud , pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered, float voxel_size) {
+void VoxelDownSample(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud , pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered, float voxel_size) {
     // Create the filtering object
     pcl::VoxelGrid<pcl::PointXYZ> sor;
 
@@ -171,6 +173,8 @@ double time_inc(std::chrono::high_resolution_clock::time_point &t_end,
 
 
 int main(int argc, char** argv) {
+
+
     if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <input_pcd_file>" << std::endl;
         return -1;
@@ -187,7 +191,7 @@ int main(int argc, char** argv) {
 
     // PassthroghFilter(cloud, filtered_cloud);
 
-    VoxelDownsample(cloud, filtered_cloud, 1.0);
+    VoxelDownSample(cloud, filtered_cloud, 1.0);
 
     pcl::PointXYZ min_pt, max_pt;
     pcl::getMinMax3D(*filtered_cloud, min_pt, max_pt); //
@@ -202,6 +206,10 @@ int main(int argc, char** argv) {
     int M = static_cast<int>(x_range / grid_width) + 2;
     int N = static_cast<int>(y_range / grid_height) + 2;
      
+    std::cout << "min_pt.x is: " << min_pt.x << std::endl;
+    std::cout << "max_pt.x is: " << max_pt.x << std::endl;
+    std::cout << "min_pt.y is: " << min_pt.y << std::endl;
+    std::cout << "max_pt.y is: " << max_pt.y << std::endl;
 
     std::vector<std::vector<Grid>> grids(M, std::vector<Grid>(N));
 
@@ -247,57 +255,96 @@ int main(int argc, char** argv) {
 
     auto start = std::chrono::high_resolution_clock::now();
 
+
+    // obtain the height difference of bspline-fitting surface
     pcl::PointXYZ min_pt_g, max_pt_g;
     pcl::getMinMax3D(*ground_cloud, min_pt_g, max_pt_g);
 
-    float x_range_g = max_pt_g.x - min_pt_g.x;
-    float y_range_g = max_pt_g.y - min_pt_g.y;
+    // version 1: cover all raw pointcloud
 
-
-    int M_g = static_cast<int>(x_range_g / grid_width) + 1;
-    int N_g = static_cast<int>(y_range_g / grid_height) + 1;    
-
-    vector<vector<Eigen::Vector3d>> cnPoint(M_g, vector<Eigen::Vector3d>(N_g));
+    std::vector<std::vector<Eigen::Vector3d>> cn_point(M, std::vector<Eigen::Vector3d>(N));
     double maxDouble = std::numeric_limits<double>::max();
 
+
     // create control points grid
-    for (size_t i = 0; i < M_g; i++) {
-        for (size_t j = 0; j < N_g; j++) {
-            // cnPoint[i][j] = Eigen::Vector3d(min_pt.x + i * grid_width, min_pt.y + j * grid_height, low_peak);
-            cnPoint[i][j](0) = min_pt_g.x + i * grid_width;
-            cnPoint[i][j](1) = min_pt_g.y + j * grid_height;
-            cnPoint[i][j](2) = maxDouble;
+    for (size_t i = 0; i < M; i++) {
+        for (size_t j = 0; j < N; j++) {
+            // cn_point[i][j] = Eigen::Vector3d(min_pt.x + i * grid_width, min_pt.y + j * grid_height, low_peak);
+            cn_point[i][j](0) = min_pt.x + i * grid_width;
+            cn_point[i][j](1) = min_pt.y + j * grid_height;
+            cn_point[i][j](2) = maxDouble;
         }
     }
 
     for (const auto& point : ground_cloud->points) {
         float x_ptc = static_cast<float>(point.x);
         float y_ptc = static_cast<float>(point.y);
-        cnPoint[(x_ptc - min_pt_g.x) / grid_width][(y_ptc - min_pt_g.y) / grid_height](2) = point.z;
+        cn_point[(x_ptc - min_pt.x) / grid_width][(y_ptc - min_pt.y) / grid_height](2) = point.z;
     }
 
-    std::vector<Point> ptc = pclPointCloudToVector(ground_cloud);
+    std::vector<Point> ptc = PclPointCloudToVector(ground_cloud);
     // // 插值填充空栅格
-    for (int i = 0; i < M_g; ++i) {
-        for (int j = 0; j < N_g; ++j) {
-            if (cnPoint[i][j](2) == maxDouble) {
-                double x_em = min_pt_g.x + i * grid_width;
-                double y_em = min_pt_g.y + j * grid_height;
-                cnPoint[i][j](2) = interpolatePoint(ptc, x_em, y_em);
+    for (int i = 0; i < M; ++i) {
+        for (int j = 0; j < N; ++j) {
+            if (cn_point[i][j](2) == maxDouble) {
+                double x_em = min_pt.x + i * grid_width;
+                double y_em = min_pt.y + j * grid_height;
+                cn_point[i][j](2) = interpolatePoint(ptc, x_em, y_em);
             }
         }
     }
 
+    // version 2: cover all the extracted ground point
+    // create control points grid
 
-    // test Bspline
+    // float x_range_g = max_pt_g.x - min_pt_g.x;
+    // float y_range_g = max_pt_g.y - min_pt_g.y;
+    // int M_g = static_cast<int>(x_range_g / grid_width) + 1; // x_range_g is int-type
+    // int N_g = static_cast<int>(y_range_g / grid_height) + 1;
+
+    // vector<vector<Eigen::Vector3d>> cn_point(M_g, vector<Eigen::Vector3d>(N_g));
+    // double maxDouble = std::numeric_limits<double>::max();
+
+    // std::cout << x_range_g << " " << y_range_g << std::endl;
+
+    // for (size_t i = 0; i < M_g; i++) {
+    //     for (size_t j = 0; j < N_g; j++) {
+    //         // cn_point[i][j] = Eigen::Vector3d(min_pt.x + i * grid_width, min_pt.y + j * grid_height, low_peak);
+    //         cn_point[i][j](0) = min_pt_g.x + i * grid_width;
+    //         cn_point[i][j](1) = min_pt_g.y + j * grid_height;
+    //         cn_point[i][j](2) = maxDouble;
+    //     }
+    // }
+
+    // for (const auto& point : ground_cloud->points) {
+    //     float x_ptc = static_cast<float>(point.x);
+    //     float y_ptc = static_cast<float>(point.y);
+    //     cn_point[(x_ptc - min_pt_g.x) / grid_width][(y_ptc - min_pt_g.y) / grid_height](2) = point.z;
+    // }
+
+    // std::vector<Point> ptc = pclPointCloudToVector(ground_cloud);
+    // // // 插值填充空栅格
+    // for (int i = 0; i < M_g; ++i) {
+    //     for (int j = 0; j < N_g; ++j) {
+    //         if (cn_point[i][j](2) == maxDouble) {
+    //             double x_em = min_pt_g.x + i * grid_width;
+    //             double y_em = min_pt_g.y + j * grid_height;
+    //             cn_point[i][j](2) = interpolatePoint(ptc, x_em, y_em);
+    //         }
+    //     }
+    // }
+
+
+    // *************************test Bspline*******************************
 
     int k = 3; // 阶数
     // 创建 B-spline 曲面对象
-    bspSurface surface(cnPoint, k);
+    BspSurface surface(cn_point, k);
 
     // 生成曲面点和法线，用于绘制
-    vector<Eigen::Vector3d> vertices;
-    surface.getFittingSurface(vertices, 0.05); // 0.05为step
+    std::vector<Eigen::Vector3d> vertices;
+    surface.GetFittingSurface(vertices, 0.05); // 0.05为step
+    // surface.calPos();
     
 
     auto end = std::chrono::high_resolution_clock::now();
@@ -305,9 +352,23 @@ int main(int argc, char** argv) {
     std::cout << "Bspline-fitting time: " << duration << " milliseconds" << std::endl;  
     std::cout << "The height difference is: " << max_pt_g.z - min_pt_g.z << std::endl;
 
+
+    Eigen::Vector3d test_point_;
+
+    float x_intr = 0;
+    float y_intr = 0;
+
+    double u = (x_intr - min_pt.x) / x_range;
+    double v = (y_intr - min_pt.y) / y_range;
+    // test_point_ = surface.GetFittingPoint(x_intr,  y_intr, grid_width);
+    test_point_ = surface.CalPos(u, v);
+
+    std::cout << test_point_(0) << std::endl;
+    std::cout << test_point_(1) << std::endl;
+    std::cout << test_point_(2) << std::endl;
     // 提取控制点
-    vector<Eigen::Vector3d> control_points;
-    for (const auto& row : cnPoint)
+    std::vector<Eigen::Vector3d> control_points;
+    for (const auto& row : cn_point)
     {
         for (const auto& point : row)
         {
@@ -316,7 +377,7 @@ int main(int argc, char** argv) {
     }
 
     // 可视化拟合点和控制点
-    visualizePointCloud(filtered_cloud, vertices, ground_cloud);
+    VisualizePointCloud(filtered_cloud, vertices, ground_cloud);
 
     return 0;
 }

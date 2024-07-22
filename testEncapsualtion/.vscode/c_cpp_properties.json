@@ -8,6 +8,7 @@
       "includePath": [
         "/opt/ros/noetic/include/**",
         "/usr/include/**",
+        "/usr/include/pcl-1.10",
         "${workspaceFolder}/src/celltest/include/**"
       ],
       "name": "ROS",

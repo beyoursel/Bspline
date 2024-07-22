@@ -2,7 +2,7 @@
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/install")
+  set(CMAKE_INSTALL_PREFIX "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/build/gtest/googletest/cmake_install.cmake")
+  include("/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/gtest/googletest/cmake_install.cmake")
 
 endif()
 

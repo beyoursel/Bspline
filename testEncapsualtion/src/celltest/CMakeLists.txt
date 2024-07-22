@@ -18,6 +18,10 @@ find_package(catkin REQUIRED COMPONENTS
 
 
 find_package(PCL 1.10 REQUIRED)
+
+# for Debug
+# set(CMAKE_BUILD_TYPE Debug)
+
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
@@ -139,7 +143,12 @@ include_directories(
 #   src/Bspline.cpp
 # )
 
-# link_directories(/media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/devel/lib)
+link_directories(${CMAKE_SOURCE_DIR}/${PROJECT_NAME}/lib)
+
+# Print the source and binary directories
+# message(STATUS "Source Directory: ${CMAKE_SOURCE_DIR}")
+# message(STATUS "Binary Directory: ${CMAKE_BINARY_DIR}")
+# message(STATUS "Project Name: ${PROJECT_NAME}")
 
 link_directories(${PCL_LIBRARY_DIRS})
 add_definitions(${PCL_DEFINITIONS})
@@ -153,7 +162,7 @@ add_definitions(${PCL_DEFINITIONS})
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/celltest_node.cpp)
 
-add_executable(generateBsplineSurface src/generateBsplineSurface.cpp)
+add_executable(generate_bspline_surface src/generate_bspline_surface.cpp src/bspline.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -171,8 +180,8 @@ add_executable(generateBsplineSurface src/generateBsplineSurface.cpp)
 # )
 
 
-target_link_libraries(generateBsplineSurface
-  Bspline
+target_link_libraries(generate_bspline_surface
+  # Bspline
   ${catkin_LIBRARIES}
   ${PCL_LIBRARIES}  
 )

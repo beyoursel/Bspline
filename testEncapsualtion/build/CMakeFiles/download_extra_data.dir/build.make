@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/src
+CMAKE_SOURCE_DIR = /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/build
+CMAKE_BINARY_DIR = /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build
 
 # Utility rule file for download_extra_data.
 
@@ -67,6 +67,6 @@ CMakeFiles/download_extra_data.dir/clean:
 .PHONY : CMakeFiles/download_extra_data.dir/clean
 
 CMakeFiles/download_extra_data.dir/depend:
-	cd /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/src /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/src /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/build /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/build /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/build/CMakeFiles/download_extra_data.dir/DependInfo.cmake --color=$(COLOR)
+	cd /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/CMakeFiles/download_extra_data.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/download_extra_data.dir/depend
 

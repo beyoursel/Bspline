@@ -48,10 +48,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/src
+CMAKE_SOURCE_DIR = /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/build
+CMAKE_BINARY_DIR = /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build
 
 #=============================================================================
 # Targets provided globally by CMake.
@@ -137,9 +137,9 @@ test/fast: test
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/build/CMakeFiles /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/build/CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/CMakeFiles /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/CMakeFiles/progress.marks
 	$(MAKE) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -283,19 +283,6 @@ gtest: cmake_check_build_system
 gtest/fast:
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/build
 .PHONY : gtest/fast
-
-#=============================================================================
-# Target rules for targets named generateBsplineSurface
-
-# Build rule for target.
-generateBsplineSurface: cmake_check_build_system
-	$(MAKE) -f CMakeFiles/Makefile2 generateBsplineSurface
-.PHONY : generateBsplineSurface
-
-# fast build rule for target.
-generateBsplineSurface/fast:
-	$(MAKE) -f celltest/CMakeFiles/generateBsplineSurface.dir/build.make celltest/CMakeFiles/generateBsplineSurface.dir/build
-.PHONY : generateBsplineSurface/fast
 
 #=============================================================================
 # Target rules for targets named tf2_msgs_generate_messages_nodejs
@@ -504,6 +491,19 @@ dynamic_reconfigure_generate_messages_lisp: cmake_check_build_system
 dynamic_reconfigure_generate_messages_lisp/fast:
 	$(MAKE) -f celltest/CMakeFiles/dynamic_reconfigure_generate_messages_lisp.dir/build.make celltest/CMakeFiles/dynamic_reconfigure_generate_messages_lisp.dir/build
 .PHONY : dynamic_reconfigure_generate_messages_lisp/fast
+
+#=============================================================================
+# Target rules for targets named generate_bspline_surface
+
+# Build rule for target.
+generate_bspline_surface: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 generate_bspline_surface
+.PHONY : generate_bspline_surface
+
+# fast build rule for target.
+generate_bspline_surface/fast:
+	$(MAKE) -f celltest/CMakeFiles/generate_bspline_surface.dir/build.make celltest/CMakeFiles/generate_bspline_surface.dir/build
+.PHONY : generate_bspline_surface/fast
 
 #=============================================================================
 # Target rules for targets named std_srvs_generate_messages_lisp
@@ -1333,7 +1333,6 @@ help:
 	@echo "... gmock"
 	@echo "... gtest_main"
 	@echo "... gtest"
-	@echo "... generateBsplineSurface"
 	@echo "... tf2_msgs_generate_messages_nodejs"
 	@echo "... tf2_msgs_generate_messages_lisp"
 	@echo "... actionlib_msgs_generate_messages_py"
@@ -1350,6 +1349,7 @@ help:
 	@echo "... pcl_msgs_generate_messages_cpp"
 	@echo "... tf2_msgs_generate_messages_cpp"
 	@echo "... dynamic_reconfigure_generate_messages_lisp"
+	@echo "... generate_bspline_surface"
 	@echo "... std_srvs_generate_messages_lisp"
 	@echo "... dynamic_reconfigure_gencfg"
 	@echo "... nodelet_generate_messages_cpp"

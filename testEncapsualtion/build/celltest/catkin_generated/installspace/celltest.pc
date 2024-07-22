@@ -1,4 +1,4 @@
-prefix=/media/taole/HHD/Doc/daily_work/work_tg/testEncapsualtion/install
+prefix=/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/install
 
 Name: celltest
 Description: Description of celltest
