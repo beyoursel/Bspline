@@ -399,8 +399,8 @@ int main(int argc, char** argv) {
 
     // Eigen::Vector3d test_point_;
 
-    float x_intr = std::stof(argv[2]);
-    float y_intr = std::stof(argv[3]);
+    // float x_intr = std::stof(argv[2]);
+    // float y_intr = std::stof(argv[3]);
 
 
     for (int i = 90; i < 200;) {
