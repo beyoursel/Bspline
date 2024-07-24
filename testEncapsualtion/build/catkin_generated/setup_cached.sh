@@ -7,7 +7,10 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/devel:$CMAKE_PREFIX_PATH"
-export PWD='/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build'
-export ROSLISP_PACKAGE_DIRECTORIES='/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/devel/share/common-lisp'
-export ROS_PACKAGE_PATH="/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src:$ROS_PACKAGE_PATH"
+export CMAKE_PREFIX_PATH="/media/taole/ssd1/letaotao/Bspline/testEncapsualtion/devel:$CMAKE_PREFIX_PATH"
+export LD_LIBRARY_PATH='/media/taole/ssd1/letaotao/Bspline/testEncapsualtion/devel/lib:/opt/ros/noetic/lib:/usr/local/cuda/lib64:/opt/MVS/lib/64:/opt/MVS/lib/32:/opt/MVS/lib/64:/opt/MVS/lib/32'
+export PKG_CONFIG_PATH='/media/taole/ssd1/letaotao/Bspline/testEncapsualtion/devel/lib/pkgconfig:/opt/ros/noetic/lib/pkgconfig:/usr/local/lib/pkgconfig'
+export PWD='/media/taole/ssd1/letaotao/Bspline/testEncapsualtion/build'
+export PYTHONPATH='/opt/ros/noetic/lib/python3/dist-packages:/media/taole/ssd1/coding_frame/AB3DMOT:/media/taole/ssd1/coding_frame/AB3DMOT/Xinshuo_PyToolbox'
+export ROSLISP_PACKAGE_DIRECTORIES='/media/taole/ssd1/letaotao/Bspline/testEncapsualtion/devel/share/common-lisp'
+export ROS_PACKAGE_PATH="/media/taole/ssd1/letaotao/Bspline/testEncapsualtion/src:$ROS_PACKAGE_PATH"

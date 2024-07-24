@@ -6,7 +6,7 @@
 
 #IncludeRegexTransform: 
 
-/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest/include/bspline.h
+/media/taole/ssd1/letaotao/Bspline/testEncapsualtion/src/celltest/include/bspline.h
 vector
 -
 iostream
@@ -14,7 +14,7 @@ iostream
 Eigen/Dense
 -
 
-/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest/src/generate_bspline_surface.cpp
+/media/taole/ssd1/letaotao/Bspline/testEncapsualtion/src/celltest/src/generate_bspline_surface.cpp
 iostream
 -
 vector

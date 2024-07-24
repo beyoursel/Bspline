@@ -327,83 +327,8 @@ std::vector<Eigen::Vector3d> BspSurface::GetKnotPoints() {
 }
 
 
-Eigen::Vector3d BspSurface::GetFittingPoint(float x, float y, float min_ptc_x, float min_ptc_y, float grid_size)
+Eigen::Vector3d BspSurface::GetFittingPoint(float x, float y)
 {   
-
-    // std::vector<Eigen::Vector3d> ptc_est;
-    
-
-    // float x_grid = (x - min_ptc_x) / grid_size;
-    // float y_grid = (y - min_ptc_y) / grid_size;
-
-
-    // int x_grid_int = static_cast<int>(x_grid);
-    // int y_grid_int = static_cast<int>(y_grid);
-
-
-    // int L_ptc_u = x_grid_int + m_ku_ - 1; // 所求x_grid落在controlpoint[x_grid_int]和controlpoint[x_grid_int+1]之间；已知control_point的索引，反推L
-    // int L_ptc_v = y_grid_int + m_kv_ - 1;
-    
-    // u所处的knot_span为[knots[L_ptc_u], knots[L_ptc_u+1])
-    // v所处的knot_span为[knots[L_ptc_v], knots[L_ptc_v+1])
-    // float step = 0.05;
-
-    // int L_u_;
-    // int L_v_;
-
-    // int n_p = m_cn_point_.size();
-
-    // if (L_ptc_u >= n_p) {
-    //     L_u_ = n_p;
-    // } else if (L_ptc_u <= m_ku_ - 1) {
-    //     L_u_ = m_ku_ - 1;
-    // } else {
-    //     L_u_ = L_ptc_u;
-    // }
-
-    // if (L_ptc_v >= n_p) {
-    //     L_v_ = n_p;
-    // } else if (L_ptc_v <= m_kv_ - 1) {
-    //     L_v_ = m_kv_ - 1;
-    // } else {
-    //     L_v_ = L_ptc_v;
-    // }    
-
-
-    // int m = (m_knots_u_[L_u_] - m_knots_u_[L_u_-1]) / step;
-    // int n = (m_knots_v_[L_v_] - m_knots_v_[L_v_-1]) / step;
-
-
-    // for (int i = 0; i <= m; ++i)
-    // {
-    //     for (int j = 0; j <= n; ++j)
-    //     {
-    //         float u = 0, v = 0;
-    //         if (i == m)
-    //         {
-    //             u = m_knots_u_[L_u_];
-    //             v = m_knots_v_[L_v_-1] + j*step;
-                
-    //         }
-    //         else if (j == n)
-    //         {
-    //             u = m_knots_u_[L_u_-1] + i*step;
-    //             v = m_knots_u_[L_v_];
-                
-    //         }
-    //         else
-    //         {
-    //             u = m_knots_u_[L_u_-1] + i*step;
-    //             v = m_knots_v_[L_v_-1] + j*step;
-    //         }
-    //         Eigen::Vector3d temp = CalPos(u, v);
-    //         ptc_est.push_back(temp);
-    //         // std::cout << "x: " << temp(0) << std::endl;
-    //         // std::cout << "y: " << temp(1) << std::endl;
-    //         // std::cout << "z: " << temp(2) << std::endl;
-
-    //     }
-    // }
 
     std::vector<float> knot_x;
     std::vector<float> knot_y;
@@ -451,11 +376,11 @@ Eigen::Vector3d BspSurface::GetFittingPoint(float x, float y, float min_ptc_x, f
     }
 
 
-    double lu = (x - knot_x[knot_grid_x]) / (knot_x[knot_grid_x+1] - knot_x[knot_grid_x]) * (m_knots_u_[m_ku_-1+knot_grid_x+1] - m_knots_u_[m_ku_-1+knot_grid_x]); 
-    double lv = (y - knot_y[knot_grid_y]) / (knot_y[knot_grid_y+1] - knot_y[knot_grid_y]) * (m_knots_v_[m_kv_-1+knot_grid_y+1] - m_knots_v_[m_kv_-1+knot_grid_y]);
+    float lu = (x - knot_x[knot_grid_x]) / (knot_x[knot_grid_x + 1] - knot_x[knot_grid_x]) * (m_knots_u_[m_ku_ - 1 + knot_grid_x + 1] - m_knots_u_[m_ku_ - 1 + knot_grid_x]); 
+    float lv = (y - knot_y[knot_grid_y]) / (knot_y[knot_grid_y + 1] - knot_y[knot_grid_y]) * (m_knots_v_[m_kv_ - 1 + knot_grid_y + 1] - m_knots_v_[m_kv_ - 1 + knot_grid_y]);
 
 
-    Eigen::Vector3d temp1 = CalPos(m_knots_u_[m_ku_-1+knot_grid_x]+lu, m_knots_v_[m_kv_-1+knot_grid_y]+lv);
+    Eigen::Vector3d temp1 = CalPos(m_knots_u_[m_ku_ -1 + knot_grid_x] + lu, m_knots_v_[m_kv_ - 1 + knot_grid_y] + lv);
     std::cout << temp1(0) << " " << temp1(1) << " " << temp1(2) << std::endl;
 
 

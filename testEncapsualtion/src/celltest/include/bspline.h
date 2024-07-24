@@ -34,7 +34,7 @@ public:
 	
 	std::vector<Eigen::Vector3d> GetKnotPoints();
 	// obtain interpolate point
-	Eigen::Vector3d GetFittingPoint(float x, float y, float min_ptc_x, float min_ptc_y, float grid_size);
+	Eigen::Vector3d GetFittingPoint(float x, float y);
 
 
 private:

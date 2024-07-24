@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/devel/lib/celltest/generate_bspline_surface",
-            "args": ["/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/data_for_test/obstacle_2407161007_rotation_cut_clean.pcd"],
+            "args": ["${workspaceFolder}/data_for_test/obstacle_2407161007_rotation_cut_clean.pcd"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [
