@@ -22,15 +22,19 @@ public:
 
 	// 根据参数u,v计算曲面上的坐标
 	Eigen::Vector3d CalPos(const float& u, const float& v);
+	Eigen::Vector3d CalPosSingle(const float& u, const float& v, int grid_x, int grid_y);
 
 	Eigen::Vector3d CalPos(const std::vector<Eigen::Vector3d>& controlpoint, const std::vector<float>& knots, const float& t);
+	Eigen::Vector3d CalPosSingle(const std::vector<Eigen::Vector3d>& controlpoint, const std::vector<float>& knots, const float& t);
 
 	void SetKnotVector(std::vector<std::vector<Eigen::Vector3d>> cnPoint, std::vector<float>& knots_u_b, std::vector<float>& knots_v_b);
 
+	void SetUniformKnotVector(std::vector<std::vector<Eigen::Vector3d>> cnPoint, std::vector<float>& knots_u_b, std::vector<float>& knots_v_b);
 	void GetFittingSurface(std::vector<Eigen::Vector3d>& vertices, float step);
 	
+	std::vector<Eigen::Vector3d> GetKnotPoints();
 	// obtain interpolate point
-	Eigen::Vector3d GetFittingPoint(float x, float y, float grid_size);
+	Eigen::Vector3d GetFittingPoint(float x, float y, float min_ptc_x, float min_ptc_y, float grid_size);
 
 
 private:
