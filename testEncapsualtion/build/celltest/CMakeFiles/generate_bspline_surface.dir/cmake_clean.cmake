@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/media/taole/ssd1/letaotao/Bspline/testEncapsualtion/devel/lib/celltest/generate_bspline_surface"
-  "/media/taole/ssd1/letaotao/Bspline/testEncapsualtion/devel/lib/celltest/generate_bspline_surface.pdb"
+  "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/devel/lib/celltest/generate_bspline_surface"
+  "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/devel/lib/celltest/generate_bspline_surface.pdb"
   "CMakeFiles/generate_bspline_surface.dir/src/bspline.cpp.o"
   "CMakeFiles/generate_bspline_surface.dir/src/generate_bspline_surface.cpp.o"
 )

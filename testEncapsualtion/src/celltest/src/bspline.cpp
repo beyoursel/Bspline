@@ -381,7 +381,7 @@ Eigen::Vector3d BspSurface::GetFittingPoint(float x, float y)
 
 
     Eigen::Vector3d temp1 = CalPos(m_knots_u_[m_ku_ -1 + knot_grid_x] + lu, m_knots_v_[m_kv_ - 1 + knot_grid_y] + lv);
-    std::cout << temp1(0) << " " << temp1(1) << " " << temp1(2) << std::endl;
+    // std::cout << temp1(0) << " " << temp1(1) << " " << temp1(2) << std::endl;
 
 
     return temp1;

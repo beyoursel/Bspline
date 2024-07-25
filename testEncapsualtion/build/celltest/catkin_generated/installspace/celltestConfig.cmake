@@ -67,14 +67,14 @@ set(celltest_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(celltest_SOURCE_PREFIX /media/taole/ssd1/letaotao/Bspline/testEncapsualtion/src/celltest)
-  set(celltest_DEVEL_PREFIX /media/taole/ssd1/letaotao/Bspline/testEncapsualtion/devel)
+  set(celltest_SOURCE_PREFIX /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest)
+  set(celltest_DEVEL_PREFIX /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/devel)
   set(celltest_INSTALL_PREFIX "")
   set(celltest_PREFIX ${celltest_DEVEL_PREFIX})
 else()
   set(celltest_SOURCE_PREFIX "")
   set(celltest_DEVEL_PREFIX "")
-  set(celltest_INSTALL_PREFIX /media/taole/ssd1/letaotao/Bspline/testEncapsualtion/install)
+  set(celltest_INSTALL_PREFIX /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/install)
   set(celltest_PREFIX ${celltest_INSTALL_PREFIX})
 endif()
 
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /media/taole/ssd1/letaotao/Bspline/testEncapsualtion/install/lib;/opt/ros/noetic/lib)
+    foreach(path /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/install/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

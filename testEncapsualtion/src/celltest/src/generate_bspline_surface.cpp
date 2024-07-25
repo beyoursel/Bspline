@@ -15,9 +15,21 @@
 #include <bspline.h>
 #include <queue>
 #include <limits>
+#include <cmath>
+#include <iomanip>
+
+
+#define M_PI 3.14159265358979323846
+#define HOME_LAT_ 31.8351078
+#define HOME_LON_ 118.7806222
+
+float home_x_;
+float home_y_;
 
 
 using namespace bspline;
+using namespace std;
+
 // 定义点的结构体
 struct Point {
     double x, y, z;
@@ -27,6 +39,40 @@ struct Point {
         return x < other.x;
     }
 };
+
+
+void SetHome(double latitude, double longitude) {
+
+  home_x_ = longitude / (360.0 / (40030173.0 * cos(latitude * M_PI / 180.0)));
+  home_y_ = latitude / 0.00000899;
+}
+
+
+double M2Lat(double d) {
+  // 1米对应的纬度变化约为1/111111.0度
+  return HOME_LAT_ + d * 0.00000899;    
+}
+
+
+double M2Lon(double d)
+{
+  // 根据当前纬度计算1米对应的经度变化
+  double latitudeInRadians = HOME_LAT_ * M_PI / 180.0;
+  double metersPerDegreeLongitude = 111320.0 * cos(latitudeInRadians);
+  return HOME_LON_ + d / metersPerDegreeLongitude;
+}
+
+
+double Lat2M(double latitude)
+{
+  return latitude / 0.00000899 - home_y_;
+}
+
+double Lon2M(double longitude)
+{
+  return longitude / (360.0 / (40030173.0 * cos(HOME_LAT_ * M_PI / 180.0))) - home_x_;
+}
+
 
 // 将pcl::PointCloud<pcl::PointXYZ>::Ptr转换为std::vector<Point>
 std::vector<Point> PclPointCloudToVector(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
@@ -64,7 +110,6 @@ void VisualizePointCloudV2(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
         controlCloud->points.push_back(pcl::PointXYZ(point[0], point[1], point[2]));
     }
 
-
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> cloud_color_handler(downsample_cloud, 255, 255, 255);
     viewer->addPointCloud(downsample_cloud, cloud_color_handler, "downsample_points");
 
@@ -74,6 +119,7 @@ void VisualizePointCloudV2(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> control_color_handler(controlCloud, 255, 0, 0);
     viewer->addPointCloud(controlCloud, control_color_handler, "control_points");
 
+    viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 2, "downsample_points");
     // viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 4, "fitted_points");
     viewer->setPointCloudRenderingProperties(pcl::visualization::PCL_VISUALIZER_POINT_SIZE, 5, "control_points");
 
@@ -178,8 +224,8 @@ void StatisticalRemoveOutlier(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud , 
       // Create the filtering object
     pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
     sor.setInputCloud (input_cloud);
-    sor.setMeanK (10);
-    sor.setStddevMulThresh (2.0);
+    sor.setMeanK (40); // default: 10 越大越严格
+    sor.setStddevMulThresh (1.0); // default: 2.0 越小越严格
     sor.filter (*cloud_filtered);
 }
 
@@ -233,7 +279,7 @@ int main(int argc, char** argv) {
     // auto start = std::chrono::high_resolution_clock::now();
     pcl::PointCloud<pcl::PointXYZ>::Ptr filtered_cloud(new pcl::PointCloud<pcl::PointXYZ>);
 
-    // PassthroghFilter(cloud, filtered_cloud);
+    PassthroghFilter(cloud, cloud);
 
     VoxelDownSample(cloud, filtered_cloud, 1.0);
 
@@ -299,21 +345,30 @@ int main(int argc, char** argv) {
     pcl::PointXYZ min_pt_g, max_pt_g;
     pcl::getMinMax3D(*ground_cloud, min_pt_g, max_pt_g);
 
-    std::cout << "min_pt_g.x is: " << min_pt_g.x << std::endl;
-    std::cout << "max_pt_g.x is: " << max_pt_g.x << std::endl;
-    std::cout << "min_pt_g.y is: " << min_pt_g.y << std::endl;
-    std::cout << "max_pt_g.y is: " << max_pt_g.y << std::endl;
+
+    // print the range of ground point
+    // std::cout << "min_pt_g.x is: " << min_pt_g.x << std::endl;
+    // std::cout << "max_pt_g.x is: " << max_pt_g.x << std::endl;
+    // std::cout << "min_pt_g.y is: " << min_pt_g.y << std::endl;
+    // std::cout << "max_pt_g.y is: " << max_pt_g.y << std::endl;
+
+
+    // print the range of raw pointcloud
+    std::cout << "min_pt.x is: " << min_pt.x << std::endl;
+    std::cout << "max_pt.x is: " << max_pt.x << std::endl;
+    std::cout << "min_pt.y is: " << min_pt.y << std::endl;
+    std::cout << "max_pt.y is: " << max_pt.y << std::endl;
 
     // ***********************************version 1*************************************
     // cover all raw pointcloud
 
-    std::vector<std::vector<Eigen::Vector3d>> cn_point(M+1, std::vector<Eigen::Vector3d>(N+1));
+    std::vector<std::vector<Eigen::Vector3d>> cn_point(M+2, std::vector<Eigen::Vector3d>(N+2));
     double maxDouble = std::numeric_limits<double>::max();
 
 
     // create control points grid
-    for (size_t i = 0; i < M+1; i++) {
-        for (size_t j = 0; j < N+1; j++) {
+    for (size_t i = 0; i < M+2; i++) {
+        for (size_t j = 0; j < N+2; j++) {
             // cn_point[i][j] = Eigen::Vector3d(min_pt.x + i * grid_width, min_pt.y + j * grid_height, low_peak);
             cn_point[i][j](0) = min_pt.x + i * grid_width - grid_width;
             cn_point[i][j](1) = min_pt.y + j * grid_height - grid_height;
@@ -329,8 +384,8 @@ int main(int argc, char** argv) {
 
     std::vector<Point> ptc = PclPointCloudToVector(ground_cloud);
     // // 插值填充空栅格
-    for (int i = 0; i < M+1; ++i) {
-        for (int j = 0; j < N+1; ++j) {
+    for (int i = 0; i < M+2; ++i) {
+        for (int j = 0; j < N+2; ++j) {
             if (cn_point[i][j](2) == maxDouble) {
                 double x_em = min_pt.x + i * grid_width - grid_width;
                 double y_em = min_pt.y + j * grid_height - grid_height;
@@ -340,13 +395,13 @@ int main(int argc, char** argv) {
     }
      
     // ***********************************version 2********************************************** 
-    // cover all the extracted ground point
-    // create control points grid
+    // ***cover all the extracted ground point
+    // ***create control points grid
 
     // float x_range_g = max_pt_g.x - min_pt_g.x;
     // float y_range_g = max_pt_g.y - min_pt_g.y;
-    // int M_g = static_cast<int>(x_range_g / grid_width) + 1; // x_range_g is int-type
-    // int N_g = static_cast<int>(y_range_g / grid_height) + 1;
+    // int M_g = static_cast<int>(x_range_g / grid_width) + 1 + 2; // x_range_g is int-type
+    // int N_g = static_cast<int>(y_range_g / grid_height) + 1 + 2;
 
     // std::vector<std::vector<Eigen::Vector3d>> cn_point(M_g, std::vector<Eigen::Vector3d>(N_g));
     // double maxDouble = std::numeric_limits<double>::max();
@@ -356,8 +411,8 @@ int main(int argc, char** argv) {
     // for (size_t i = 0; i < M_g; i++) {
     //     for (size_t j = 0; j < N_g; j++) {
     //         // cn_point[i][j] = Eigen::Vector3d(min_pt.x + i * grid_width, min_pt.y + j * grid_height, low_peak);
-    //         cn_point[i][j](0) = min_pt_g.x + i * grid_width;
-    //         cn_point[i][j](1) = min_pt_g.y + j * grid_height;
+    //         cn_point[i][j](0) = min_pt_g.x + i * grid_width - grid_width;
+    //         cn_point[i][j](1) = min_pt_g.y + j * grid_height - grid_height;
     //         cn_point[i][j](2) = maxDouble;
     //     }
     // }
@@ -365,7 +420,7 @@ int main(int argc, char** argv) {
     // for (const auto& point : ground_cloud->points) {
     //     float x_ptc = static_cast<float>(point.x);
     //     float y_ptc = static_cast<float>(point.y);
-    //     cn_point[(x_ptc - min_pt_g.x) / grid_width][(y_ptc - min_pt_g.y) / grid_height](2) = point.z;
+    //     cn_point[(x_ptc - min_pt_g.x) / grid_width + 1][(y_ptc - min_pt_g.y) / grid_height + 1](2) = point.z;
     // }
 
     // std::vector<Point> ptc = PclPointCloudToVector(ground_cloud);
@@ -373,8 +428,8 @@ int main(int argc, char** argv) {
     // for (int i = 0; i < M_g; ++i) {
     //     for (int j = 0; j < N_g; ++j) {
     //         if (cn_point[i][j](2) == maxDouble) {
-    //             double x_em = min_pt_g.x + i * grid_width;
-    //             double y_em = min_pt_g.y + j * grid_height;
+    //             double x_em = min_pt_g.x + i * grid_width - grid_width;
+    //             double y_em = min_pt_g.y + j * grid_height - grid_height;
     //             cn_point[i][j](2) = interpolatePoint(ptc, x_em, y_em);
     //         }
     //     }
@@ -390,9 +445,8 @@ int main(int argc, char** argv) {
     BspSurface surface(cn_point, k);
 
     // create the Bspline surface
-    std::vector<Eigen::Vector3d> vertices;
-    surface.GetFittingSurface(vertices, 0.05); // 0.05为step
-    // surface.calPos();
+    // std::vector<Eigen::Vector3d> vertices;
+    // surface.GetFittingSurface(vertices, 0.05); // 0.05为step
     
 
     // Eigen::Vector3d test_point_;
@@ -401,37 +455,45 @@ int main(int argc, char** argv) {
 
     // Eigen::Vector3d test_point_;
 
-    float x_intr = std::stof(argv[2]);
-    float y_intr = std::stof(argv[3]);
+    // double x_intr = std::stof(argv[2]);
+    // double y_intr = std::stof(argv[3]);
+
+    double longti = std::stof(argv[2]);
+    double lati = std::stof(argv[3]);
+
+    SetHome(HOME_LAT_, HOME_LON_);
 
 
-    // estimate height
-    // for (int i = 90; i < 200;) {
-    //     for (int j = -30; j < 10;) {
+    double x_intr;
+    double y_intr;
 
-    //     if ((i < min_pt.x || i > max_pt.x || j < min_pt.y || j > max_pt.y)) {
-    //         std::cerr << "the data point is out of the range" << std::endl;
-    //         std::exit(EXIT_FAILURE);
-    //     }
-    //     test_point_ = surface.GetFittingPoint(i,  j);
-    //     test_points_set.push_back(test_point_);
-    //     j += 5;
-    //     }
-    //     i += 5;
-    // }
+    x_intr = Lon2M(longti);
+    y_intr = Lat2M(lati);
 
-    if ((x_intr < min_pt_g.x || x_intr > max_pt_g.x || y_intr < min_pt_g.y || y_intr > max_pt_g.y)) {
+
+    if ((x_intr < min_pt.x || x_intr > max_pt.x || y_intr < min_pt.y || y_intr > max_pt.y)) {
         std::cerr << "the data point is out of the range" << std::endl;
         std::exit(EXIT_FAILURE);
     }
 
-
+    // Eigen::Vector3d home_point_ = surface.GetFittingPoint(home_x_, home_y_);
+    // std::cout << std::fixed << std::setprecision(8) << "latitude: " << home_x_ << " " << "longitude: " << home_y_ << " " << "height: " << home_point_ <<  std::endl;
+    
     test_point_ = surface.GetFittingPoint(x_intr,  y_intr);
+
+    // double lat_ = M2Lat(x_intr);
+    // double lon_ = M2Lon(y_intr);
+
+    // std::cout << std::fixed << std::setprecision(8) << "latitude: " << lat_ << " " << "longitude: " << lon_ << " " << "height: " << test_point_(2) + 25.0 <<  std::endl;
+
+    std::cout << std::fixed << std::setprecision(8) << "latitude: " << lati << " " << "longitude: " << longti << " " << "height: " << test_point_(2) + 25.0 <<  std::endl;
 
     auto end = std::chrono::high_resolution_clock::now();
     double duration = time_inc(end, start);
     std::cout << "Bspline-fitting time: " << duration << " milliseconds" << std::endl;  
 
+    std::cout << "The low peak is: " << min_pt_g.z << std::endl;
+    std::cout << "The high peak is: " << max_pt_g.z << std::endl;
     std::cout << "The height difference is: " << max_pt_g.z - min_pt_g.z << std::endl;
 
 
@@ -446,11 +508,36 @@ int main(int argc, char** argv) {
     }
 
 
+    // pcl::PointCloud<pcl::PointXYZ>::Ptr bsplline_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    // for (const auto& point : vertices)
+    // {
+    //     bsplline_cloud->points.push_back(pcl::PointXYZ(point[0], point[1], point[2]));
+    // }
+
+    // std::string out_bspline_folder = "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/bspline_result";
+    // std::string output_bspline_file = out_bspline_folder + "/" + "simple_bspline_hill" + ".pcd";  
+    // pcl::io::savePCDFileBinary(output_bspline_file, *bsplline_cloud);
+
+
+    // pcl::PointCloud<pcl::PointXYZ>::Ptr control_point_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    // for (const auto& point : control_points)
+    // {
+    //     control_point_cloud->points.push_back(pcl::PointXYZ(point[0], point[1], point[2]));
+    // }
+
+    // std::string output_control_file = out_bspline_folder + "/" + "control_point" + ".pcd";  
+    // pcl::io::savePCDFileBinary(output_control_file, *control_point_cloud);
+
+
+    // std::string output_downsample_file = out_bspline_folder + "/" + "downsample" + ".pcd";  
+    // pcl::io::savePCDFileBinary(output_downsample_file, *filtered_cloud);
+
+
     // std::vector<Eigen::Vector3d> knot_points;
     // knot_points = surface.GetKnotPoints();
 
     // 可视化拟合点和控制点
-    VisualizePointCloudV2(filtered_cloud, vertices, control_points);
+    // VisualizePointCloudV2(filtered_cloud, vertices, control_points);
 
     return 0;
 }

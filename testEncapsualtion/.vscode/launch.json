@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/devel/lib/celltest/generate_bspline_surface",
-            "args": ["${workspaceFolder}/data_for_test/obstacle_2407161007_rotation_cut_clean.pcd"],
+            "args": ["${workspaceFolder}/data_for_test/uav_radar_240722195006.pcd", "118.7820834", "31.8346503"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [
