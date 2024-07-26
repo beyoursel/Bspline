@@ -285,6 +285,19 @@ gtest/fast:
 .PHONY : gtest/fast
 
 #=============================================================================
+# Target rules for targets named generate_bspline_surface_apppmf
+
+# Build rule for target.
+generate_bspline_surface_apppmf: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 generate_bspline_surface_apppmf
+.PHONY : generate_bspline_surface_apppmf
+
+# fast build rule for target.
+generate_bspline_surface_apppmf/fast:
+	$(MAKE) -f celltest/CMakeFiles/generate_bspline_surface_apppmf.dir/build.make celltest/CMakeFiles/generate_bspline_surface_apppmf.dir/build
+.PHONY : generate_bspline_surface_apppmf/fast
+
+#=============================================================================
 # Target rules for targets named tf2_msgs_generate_messages_nodejs
 
 # Build rule for target.
@@ -1333,6 +1346,7 @@ help:
 	@echo "... gmock"
 	@echo "... gtest_main"
 	@echo "... gtest"
+	@echo "... generate_bspline_surface_apppmf"
 	@echo "... tf2_msgs_generate_messages_nodejs"
 	@echo "... tf2_msgs_generate_messages_lisp"
 	@echo "... actionlib_msgs_generate_messages_py"

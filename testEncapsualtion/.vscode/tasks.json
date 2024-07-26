@@ -2,20 +2,19 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "catkin_make:release",
             "type": "shell",
             "command": "catkin_make",
-            "args": [],
-            "group": {
-                "kind": "build",
-                "isDefault": true
+            "args": [
+                "-DCMAKE_BUILD_TYPE=Release",
+                "-DPYTHON_EXECUTABLE=/usr/bin/python3"
+            ],
+            "group": "build",
+            "presentation": {
+                "reveal": "always"
             },
-            "problemMatcher": ["$gcc"],
-            "detail": "Generated task by Debugger.",
-            "options": {
-                "cwd": "${workspaceFolder}" // 确保在工作空间根目录运行catkin_make
-            }
-        }
+            "problemMatcher": "$msCompile"
+        },
     ]
 }
 
@@ -23,21 +22,25 @@
 //     "version": "2.0.0",
 //     "tasks": [
 //         {
-//             "label": "catkin_make:release",
+//             "label": "build",
 //             "type": "shell",
 //             "command": "catkin_make",
-//             "args": [
-//                 "-DCMAKE_BUILD_TYPE=Release",
-//                 "-DPYTHON_EXECUTABLE=/usr/bin/python3"
-//             ],
-//             "group": "build",
-//             "presentation": {
-//                 "reveal": "always"
+//             "args": [],
+//             "group": {
+//                 "kind": "build",
+//                 "isDefault": true
 //             },
-//             "problemMatcher": "$msCompile"
-//         },
+//             "problemMatcher": ["$gcc"],
+//             "detail": "Generated task by Debugger.",
+//             "options": {
+//                 "cwd": "${workspaceFolder}" // 确保在工作空间根目录运行catkin_make
+//             }
+//         }
 //     ]
 // }
+
+
+
 
 
 
