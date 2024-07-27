@@ -3,7 +3,7 @@
 
 namespace bspline {
 
-BspSurface::BspSurface(const std::vector<std::vector<Eigen::Vector3d>>& cn_point, int k) 
+BspSurface::BspSurface(const std::vector<std::vector<Point>>& cn_point, int k) 
 {
     m_ku_ = k;
     m_kv_ = k;
@@ -14,8 +14,7 @@ BspSurface::BspSurface(const std::vector<std::vector<Eigen::Vector3d>>& cn_point
 
     m_nu_ = m_cn_point_.size() - 1; 
     m_nv_ = m_cn_point_[0].size() - 1; 
-    // m_ku = m_knots_u.size() - 1 - m_nu; // m = n + p + 1 m+1: 节点个数; n+1：控制点个数; p: 阶数
-    // m_kv = m_knots_v.size() - 1 - m_nv;
+    // m = n + p + 1 m+1: 节点个数; n+1：控制点个数; p: 阶数
 }
 
 // constructor
@@ -44,9 +43,9 @@ BspSurface& BspSurface::operator=(const BspSurface& surface) {
 }
 
 // 根据参数u,v计算曲面上的坐标 u,v为网格坐标，不是实际点云三维坐标
-Eigen::Vector3d BspSurface::CalPos(const float& u, const float& v) {
+Point BspSurface::CalPos(const double& u, const double& v) {
 
-    std::vector<Eigen::Vector3d> v_constant(m_nu_ + 1); // 
+    std::vector<Point> v_constant(m_nu_ + 1); // 
     for (int i = 0; i < v_constant.size(); ++i)
     {
         v_constant[i] = CalPos(m_cn_point_[i], m_knots_v_, v); // v向Bspline插值
@@ -55,7 +54,7 @@ Eigen::Vector3d BspSurface::CalPos(const float& u, const float& v) {
 }
 
 
-Eigen::Vector3d BspSurface::CalPos(const std::vector<Eigen::Vector3d>& controlpoint, const std::vector<float>& knots, const float& t)
+Point BspSurface::CalPos(const std::vector<Point>& controlpoint, const std::vector<double>& knots, const double& t)
 {
     int n = controlpoint.size() - 1;
     int k = knots.size() - controlpoint.size(); // 阶数
@@ -82,7 +81,7 @@ Eigen::Vector3d BspSurface::CalPos(const std::vector<Eigen::Vector3d>& controlpo
 
     if (L >= n + 1) L = n;
 
-    std::vector<Eigen::Vector3d> temp(k);
+    std::vector<Point> temp(k);
     for (int i = 0; i < k; ++i) {
         temp[i] = controlpoint[i + L - k + 1]; // 计算t处于哪个knot_span，进而选择control point
     }
@@ -103,96 +102,13 @@ Eigen::Vector3d BspSurface::CalPos(const std::vector<Eigen::Vector3d>& controlpo
         }
     }
 
-    // new-version de-BoorCox算法
-    // for (int r = 1; r <= k; ++r)
-    // {
-    //     for (int i = 0; i <= k - r; ++i)
-    //     {
-    //         int index = L - k + 1 + r;
-    //         double factor = 0;
-    //         if (knots[index + i + k - r] != knots[index + i])
-    //         {
-    //             factor = (t - knots[index + i]) / (knots[index + i + k - r] - knots[index + i]); // 根据节点向量和坐标生成权重因子
-    //         }
-    //         temp[i] = factor*temp[i + 1] + (1 - factor)*temp[i]; // 根据权重因子和控制节点生成插值点
-
-    //     }
-    // }
-
-
-    return temp[0];
-
-}
-
-
-// 根据参数u,v计算曲面上的坐标 u,v为网格坐标，不是实际点云三维坐标
-Eigen::Vector3d BspSurface::CalPosSingle(const float& u, const float& v, int grid_x, int grid_y) {
-
-    std::vector<Eigen::Vector3d> v_constant(3); // 
-    for (int i = grid_x; i < grid_x + 3; ++i)
-    {
-        v_constant[i] = CalPosSingle(m_cn_point_[i], m_knots_v_, v); // v向Bspline插值
-    }
-    return CalPosSingle(v_constant, m_knots_u_, u);
-}
-
-
-Eigen::Vector3d BspSurface::CalPosSingle(const std::vector<Eigen::Vector3d>& controlpoint, const std::vector<float>& knots, const float& t)
-{
-    int n = controlpoint.size() - 1;
-    int k = knots.size() - controlpoint.size(); // 阶数
-    int L = 0;
-    // 计算t所处的区间[t_L, t_(L+1)], t只在[knots[k-1], knots[n+1]]中有效 确定t在哪个区间
-    if (t >= knots[n+1])
-    {
-        L = n;
-    } else if (t <= knots[k-1])
-    {
-        L = k - 1;
-    }
-    else
-    {
-        for (int i = k - 1; i <= n + 1; ++i)
-        {
-            if (t >= knots[i] && t<knots[i+1])
-            {
-                L = i;
-                break;
-            }
-        }
-    }
-
-    if (L >= n + 1) L = n;
-
-    std::vector<Eigen::Vector3d> temp(k);
-    for (int i = 0; i < k; ++i) {
-        temp[i] = controlpoint[i + L - k + 1]; // 计算t处于哪个knot_span，进而选择control point
-    }
-
-    //de-BoorCox算法
-    for (int r = 1; r <= k - 1; ++r)
-    {
-        for (int i = 0; i <= k - r - 1; ++i)
-        {
-            int index = L - k + 1 + r;
-            double factor = 0;
-            if (knots[index + i + k - r] != knots[index + i])
-            {
-                factor = (t - knots[index + i]) / (knots[index + i + k - r] - knots[index + i]); // 根据节点向量和坐标生成权重因子
-            }
-            temp[i] = factor*temp[i + 1] + (1 - factor)*temp[i]; // 根据权重因子和控制节点生成插值点
-
-        }
-    }
-
-   
     return temp[0];
 
 }
 
 
 void BspSurface::GetFittingSurface(
-    std::vector<Eigen::Vector3d>& vertices, float step)
+    std::vector<Point>& vertices, double step)
 {
 
     int m = static_cast<int>((m_knots_u_[m_nu_ + 1] - m_knots_u_[m_ku_ - 1]) / step);
@@ -223,7 +139,7 @@ void BspSurface::GetFittingSurface(
                 v = m_knots_v_[m_kv_ - 1] + j*step;
             }
             
-            Eigen::Vector3d temp = CalPos(u, v);
+            Point temp = CalPos(u, v);
             vertices.push_back(temp);
             // std::cout << temp(0) << " " << temp(1) << " " << temp(2) << std::endl;
         }
@@ -231,15 +147,15 @@ void BspSurface::GetFittingSurface(
 }
 
 
-void BspSurface::SetUniformKnotVector(std::vector<std::vector<Eigen::Vector3d>> cnPoint, std::vector<float>& knots_u_b, std::vector<float>& knots_v_b) {
+void BspSurface::SetUniformKnotVector(std::vector<std::vector<Point>> cnPoint, std::vector<double>& knots_u_b, std::vector<double>& knots_v_b) {
     int num_control_points_u = cnPoint.size();
     int num_control_points_v = cnPoint[0].size();
 
     int num_knots_u = num_control_points_u + m_ku_;
     int num_knots_v = num_control_points_v + m_kv_;
 
-    std::vector<float> knots_u(num_knots_u);
-    std::vector<float> knots_v(num_knots_v);
+    std::vector<double> knots_u(num_knots_u);
+    std::vector<double> knots_v(num_knots_v);
 
     // // 均匀分布U方向节点
     for (int i = 0; i < num_knots_u; ++i) {
@@ -279,10 +195,10 @@ void BspSurface::SetUniformKnotVector(std::vector<std::vector<Eigen::Vector3d>> 
 
 
 // 设置均匀节点向量
-void BspSurface::SetKnotVector(std::vector<std::vector<Eigen::Vector3d>> cnPoint, std::vector<float>& knots_u_b, std::vector<float>& knots_v_b) {
+void BspSurface::SetKnotVector(std::vector<std::vector<Point>> cnPoint, std::vector<double>& knots_u_b, std::vector<double>& knots_v_b) {
 
-    std::vector<float> knots_u(cnPoint.size() + m_ku_);
-    std::vector<float> knots_v(cnPoint[0].size() + m_kv_);
+    std::vector<double> knots_u(cnPoint.size() + m_ku_);
+    std::vector<double> knots_v(cnPoint[0].size() + m_kv_);
 
     for (int i = 0; i < m_ku_; ++i)
     {
@@ -309,15 +225,15 @@ void BspSurface::SetKnotVector(std::vector<std::vector<Eigen::Vector3d>> cnPoint
 }
 
 
-std::vector<Eigen::Vector3d> BspSurface::GetKnotPoints() {
+std::vector<Point> BspSurface::GetKnotPoints() {
 
-    std::vector<Eigen::Vector3d> ptc_est;
+    std::vector<Point> ptc_est;
 
     for (int i = m_ku_ - 1; i <= m_nu_ + 1; i++) {
         for (int j = m_kv_ - 1; j <= m_nv_ + 1; j++) {
         float u = m_knots_u_[i];
         float v = m_knots_v_[j];
-        Eigen::Vector3d temp = CalPos(u, v);
+        Point temp = CalPos(u, v);
         ptc_est.push_back(temp);
         // std::cout << temp(0) << " " << temp(1) << " " << temp(2) << std::endl;
     }
@@ -327,20 +243,20 @@ std::vector<Eigen::Vector3d> BspSurface::GetKnotPoints() {
 }
 
 
-Eigen::Vector3d BspSurface::GetFittingPoint(float x, float y)
+Point BspSurface::GetFittingPoint(double x, double y)
 {   
 
-    std::vector<float> knot_x;
-    std::vector<float> knot_y;
+    std::vector<double> knot_x;
+    std::vector<double> knot_y;
 
 
     for (int j = m_kv_ - 1; j <= m_ku_ - 1; j++) {
         for (int i = m_ku_ - 1; i <= m_nu_ + 1; i++) 
         {
-            float u = m_knots_u_[i];
-            float v = m_knots_v_[j];
-            Eigen::Vector3d temp = CalPos(u, v);
-            knot_x.push_back(temp(0));
+            double u = m_knots_u_[i];
+            double v = m_knots_v_[j];
+            Point temp = CalPos(u, v);
+            knot_x.push_back(temp.x);
         }
     }
 
@@ -350,10 +266,10 @@ Eigen::Vector3d BspSurface::GetFittingPoint(float x, float y)
 
     for (int i = m_ku_ - 1; i <= m_kv_ - 1; i++) {
         for (int j = m_kv_ - 1; j <= m_nv_ + 1; j++) {
-            float u = m_knots_u_[i];
-            float v = m_knots_v_[j];
-            Eigen::Vector3d temp = CalPos(u, v);
-            knot_y.push_back(temp(1));
+            double u = m_knots_u_[i];
+            double v = m_knots_v_[j];
+            Point temp = CalPos(u, v);
+            knot_y.push_back(temp.y);
         }
     }
 
@@ -380,7 +296,7 @@ Eigen::Vector3d BspSurface::GetFittingPoint(float x, float y)
     float lv = (y - knot_y[knot_grid_y]) / (knot_y[knot_grid_y + 1] - knot_y[knot_grid_y]) * (m_knots_v_[m_kv_ - 1 + knot_grid_y + 1] - m_knots_v_[m_kv_ - 1 + knot_grid_y]);
 
 
-    Eigen::Vector3d temp1 = CalPos(m_knots_u_[m_ku_ -1 + knot_grid_x] + lu, m_knots_v_[m_kv_ - 1 + knot_grid_y] + lv);
+    Point temp1 = CalPos(m_knots_u_[m_ku_ -1 + knot_grid_x] + lu, m_knots_v_[m_kv_ - 1 + knot_grid_y] + lv);
     // std::cout << temp1(0) << " " << temp1(1) << " " << temp1(2) << std::endl;
 
 

@@ -11,14 +11,6 @@ vector
 -
 iostream
 -
-Eigen/Dense
--
-
-/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest/src/bspline.cpp
-bspline.h
-/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest/src/bspline.h
-cmath
--
 
 /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest/src/generate_bspline_surface.cpp
 iostream

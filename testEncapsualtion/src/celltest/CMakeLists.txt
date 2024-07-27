@@ -165,6 +165,7 @@ add_definitions(${PCL_DEFINITIONS})
 
 add_executable(generate_bspline_surface src/generate_bspline_surface.cpp src/bspline.cpp)
 add_executable(generate_bspline_surface_apppmf src/generate_bspline_surface_apppmf.cpp src/bspline.cpp)
+add_executable(downsample src/downsample.cpp)
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -188,6 +189,12 @@ target_link_libraries(generate_bspline_surface
 )
 
 target_link_libraries(generate_bspline_surface_apppmf
+  # Bspline
+  ${catkin_LIBRARIES}
+  ${PCL_LIBRARIES}  
+)
+
+target_link_libraries(downsample
   # Bspline
   ${catkin_LIBRARIES}
   ${PCL_LIBRARIES}  

@@ -5,8 +5,8 @@
             "name": "(gdb) 启动",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/devel/lib/celltest/generate_bspline_surface",
-            "args": ["${workspaceFolder}/data_for_test/uav_radar_240722195006.pcd", "118.7820834", "31.8346503"],
+            "program": "${workspaceFolder}/devel/lib/celltest/generate_bspline_surface_apppmf",
+            "args": ["${workspaceFolder}/data_for_test/uav_radar_240722195006_cut_clean.pcd"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [

@@ -285,6 +285,19 @@ gtest/fast:
 .PHONY : gtest/fast
 
 #=============================================================================
+# Target rules for targets named downsample
+
+# Build rule for target.
+downsample: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 downsample
+.PHONY : downsample
+
+# fast build rule for target.
+downsample/fast:
+	$(MAKE) -f celltest/CMakeFiles/downsample.dir/build.make celltest/CMakeFiles/downsample.dir/build
+.PHONY : downsample/fast
+
+#=============================================================================
 # Target rules for targets named generate_bspline_surface_apppmf
 
 # Build rule for target.
@@ -1346,6 +1359,7 @@ help:
 	@echo "... gmock"
 	@echo "... gtest_main"
 	@echo "... gtest"
+	@echo "... downsample"
 	@echo "... generate_bspline_surface_apppmf"
 	@echo "... tf2_msgs_generate_messages_nodejs"
 	@echo "... tf2_msgs_generate_messages_lisp"

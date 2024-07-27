@@ -3,17 +3,62 @@
 
 #include <vector>
 #include <iostream>
-#include <Eigen/Dense>
 
 
 namespace bspline {
 
 
+struct Point {
+
+    Point() : x(0.0), y(0.0), z(0.0) {}
+    Point(double x_p, double y_p, double z_p) : x(x_p), y(y_p), z(z_p) {}
+
+    double x;
+	double y;
+	double z;
+
+    // 比较操作符，按照 x 坐标排序
+    bool operator<(const Point& other) const {
+        return x < other.x;
+    }
+
+    // 与 double 类型数据相乘的运算符重载
+    Point operator*(double scalar) const {
+        return Point(x * scalar, y * scalar, z * scalar);
+    }
+
+    // 赋值运算符，支持与 double 相乘后赋值给原对象
+    Point& operator*=(double scalar) {
+        x *= scalar;
+        y *= scalar;
+        z *= scalar;
+        return *this;
+    }
+
+    // Point 之间的加法运算符重载
+    Point operator+(const Point& other) const {
+        return Point(x + other.x, y + other.y, z + other.z);
+    }
+
+    // 赋值运算符，支持 Point 之间的加法后赋值给原对象
+    Point& operator+=(const Point& other) {
+        x += other.x;
+        y += other.y;
+        z += other.z;
+        return *this;
+    }
+
+};
+
+inline Point operator*(double scalar, const Point& point) {
+    return Point(point.x * scalar, point.y * scalar, point.z * scalar);
+}
+
 class BspSurface
 {
 public:
 	BspSurface() {}
-	BspSurface(const std::vector<std::vector<Eigen::Vector3d>>& cnPoint, int k);
+	BspSurface(const std::vector<std::vector<Point>>& cnPoint, int k);
 	// constructor
 	BspSurface(const BspSurface& surface);
 
@@ -21,20 +66,18 @@ public:
 	BspSurface& operator=(const BspSurface& surface);
 
 	// 根据参数u,v计算曲面上的坐标
-	Eigen::Vector3d CalPos(const float& u, const float& v);
-	Eigen::Vector3d CalPosSingle(const float& u, const float& v, int grid_x, int grid_y);
+	Point CalPos(const double& u, const double& v);
 
-	Eigen::Vector3d CalPos(const std::vector<Eigen::Vector3d>& controlpoint, const std::vector<float>& knots, const float& t);
-	Eigen::Vector3d CalPosSingle(const std::vector<Eigen::Vector3d>& controlpoint, const std::vector<float>& knots, const float& t);
+	Point CalPos(const std::vector<Point>& controlpoint, const std::vector<double>& knots, const double& t);
 
-	void SetKnotVector(std::vector<std::vector<Eigen::Vector3d>> cnPoint, std::vector<float>& knots_u_b, std::vector<float>& knots_v_b);
+	void SetKnotVector(std::vector<std::vector<Point>> cnPoint, std::vector<double>& knots_u_b, std::vector<double>& knots_v_b);
 
-	void SetUniformKnotVector(std::vector<std::vector<Eigen::Vector3d>> cnPoint, std::vector<float>& knots_u_b, std::vector<float>& knots_v_b);
-	void GetFittingSurface(std::vector<Eigen::Vector3d>& vertices, float step);
+	void SetUniformKnotVector(std::vector<std::vector<Point>> cnPoint, std::vector<double>& knots_u_b, std::vector<double>& knots_v_b);
+	void GetFittingSurface(std::vector<Point>& vertices, double step);
 	
-	std::vector<Eigen::Vector3d> GetKnotPoints();
+	std::vector<Point> GetKnotPoints();
 	// obtain interpolate point
-	Eigen::Vector3d GetFittingPoint(float x, float y);
+	Point GetFittingPoint(double x, double y);
 
 
 private:
@@ -42,9 +85,9 @@ private:
 	int m_nv_; // v向 0-nv
 	int m_ku_; // u向阶
 	int m_kv_; // v向阶
-	std::vector<std::vector<Eigen::Vector3d>> m_cn_point_; //控制网格点坐标 （nu+1）x(nv+1)
-	std::vector<float> m_knots_u_; // u向节点向量 u_0, ..., u_(nu+ku)
-	std::vector<float> m_knots_v_; // v向节点向量 v_0, ..., v_(nv+kv)
+	std::vector<std::vector<Point>> m_cn_point_; //控制网格点坐标 （nu+1）x(nv+1)
+	std::vector<double> m_knots_u_; // u向节点向量 u_0, ..., u_(nu+ku)
+	std::vector<double> m_knots_v_; // v向节点向量 v_0, ..., v_(nv+kv)
 };
 
 }

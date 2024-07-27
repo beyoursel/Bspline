@@ -40,6 +40,7 @@
 /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/celltest/CMakeFiles/install.dir
 /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/celltest/CMakeFiles/list_install_components.dir
 /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/celltest/CMakeFiles/rebuild_cache.dir
+/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/celltest/CMakeFiles/downsample.dir
 /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/celltest/CMakeFiles/generate_bspline_surface_apppmf.dir
 /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/celltest/CMakeFiles/tf2_msgs_generate_messages_nodejs.dir
 /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/celltest/CMakeFiles/tf2_msgs_generate_messages_lisp.dir

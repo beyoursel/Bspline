@@ -168,6 +168,21 @@ depend:
 .PHONY : depend
 
 # Convenience name for target.
+celltest/CMakeFiles/downsample.dir/rule:
+	cd /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build && $(MAKE) -f CMakeFiles/Makefile2 celltest/CMakeFiles/downsample.dir/rule
+.PHONY : celltest/CMakeFiles/downsample.dir/rule
+
+# Convenience name for target.
+downsample: celltest/CMakeFiles/downsample.dir/rule
+
+.PHONY : downsample
+
+# fast build rule for target.
+downsample/fast:
+	cd /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build && $(MAKE) -f celltest/CMakeFiles/downsample.dir/build.make celltest/CMakeFiles/downsample.dir/build
+.PHONY : downsample/fast
+
+# Convenience name for target.
 celltest/CMakeFiles/generate_bspline_surface_apppmf.dir/rule:
 	cd /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build && $(MAKE) -f CMakeFiles/Makefile2 celltest/CMakeFiles/generate_bspline_surface_apppmf.dir/rule
 .PHONY : celltest/CMakeFiles/generate_bspline_surface_apppmf.dir/rule
@@ -1397,6 +1412,33 @@ src/bspline.cpp.s:
 	cd /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build && $(MAKE) -f celltest/CMakeFiles/generate_bspline_surface.dir/build.make celltest/CMakeFiles/generate_bspline_surface.dir/src/bspline.cpp.s
 .PHONY : src/bspline.cpp.s
 
+src/downsample.o: src/downsample.cpp.o
+
+.PHONY : src/downsample.o
+
+# target to build an object file
+src/downsample.cpp.o:
+	cd /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build && $(MAKE) -f celltest/CMakeFiles/downsample.dir/build.make celltest/CMakeFiles/downsample.dir/src/downsample.cpp.o
+.PHONY : src/downsample.cpp.o
+
+src/downsample.i: src/downsample.cpp.i
+
+.PHONY : src/downsample.i
+
+# target to preprocess a source file
+src/downsample.cpp.i:
+	cd /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build && $(MAKE) -f celltest/CMakeFiles/downsample.dir/build.make celltest/CMakeFiles/downsample.dir/src/downsample.cpp.i
+.PHONY : src/downsample.cpp.i
+
+src/downsample.s: src/downsample.cpp.s
+
+.PHONY : src/downsample.s
+
+# target to generate assembly for a file
+src/downsample.cpp.s:
+	cd /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build && $(MAKE) -f celltest/CMakeFiles/downsample.dir/build.make celltest/CMakeFiles/downsample.dir/src/downsample.cpp.s
+.PHONY : src/downsample.cpp.s
+
 src/generate_bspline_surface.o: src/generate_bspline_surface.cpp.o
 
 .PHONY : src/generate_bspline_surface.o
@@ -1462,6 +1504,7 @@ help:
 	@echo "... install"
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
+	@echo "... downsample"
 	@echo "... generate_bspline_surface_apppmf"
 	@echo "... tf2_msgs_generate_messages_nodejs"
 	@echo "... tf2_msgs_generate_messages_lisp"
@@ -1547,6 +1590,9 @@ help:
 	@echo "... src/bspline.o"
 	@echo "... src/bspline.i"
 	@echo "... src/bspline.s"
+	@echo "... src/downsample.o"
+	@echo "... src/downsample.i"
+	@echo "... src/downsample.s"
 	@echo "... src/generate_bspline_surface.o"
 	@echo "... src/generate_bspline_surface.i"
 	@echo "... src/generate_bspline_surface.s"
