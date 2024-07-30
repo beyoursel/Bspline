@@ -8,6 +8,7 @@
 #include <pcl/filters/voxel_grid.h>
 #include <pcl/filters/passthrough.h>
 #include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/kdtree/kdtree_flann.h>
 #include <pcl/common/common.h>
 #include <chrono>
 #include <boost/filesystem.hpp>
@@ -29,7 +30,6 @@ float home_y_;
 
 using namespace bspline;
 using namespace std;
-
 
 
 void SetHome(double latitude, double longitude) {
@@ -174,8 +174,29 @@ float GetAverageHeight(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
     return temp_height / cloud->points.size();
 }
 
+
+double InterpolatePointKdTree(const pcl::KdTreeFLANN<bspline::Point>& kdtree, const pcl::PointCloud<bspline::Point>::Ptr& cloud, double x, double y, int k = 3) {
+    std::vector<int> pointIdxKNNSearch(k);
+    std::vector<float> pointKNNSquaredDistance(k);
+
+    bspline::Point searchPoint;
+    searchPoint.x = x;
+    searchPoint.y = y;
+
+    if (kdtree.nearestKSearch(searchPoint, k, pointIdxKNNSearch, pointKNNSquaredDistance) > 0) {
+        double sum_z = 0.0;
+        for (int idx : pointIdxKNNSearch) {
+            sum_z += cloud->points[idx].z;
+        }
+        return sum_z / k;
+    } else {
+        throw std::runtime_error("KdTree search failed.");
+    }
+}
+
+
 // 插值函数：使用KNN（k近邻）算法来填充空栅格
-double interpolatePoint(const std::vector<bspline::Point>& points, double x, double y, int k = 3) {
+double InterpolatePoint(const std::vector<bspline::Point>& points, double x, double y, int k = 3) {
     if (points.empty()) {
         throw std::invalid_argument("Point list is empty.");
     }
@@ -213,13 +234,13 @@ bool compareHeight(const bspline::Point& a, const bspline::Point& b) {
 }
 
 
-void StatisticalRemoveOutlier(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud , pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered) {
+void StatisticalRemoveOutlier(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud , pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered, int mean_k, float std_thresh) {
       // Create the filtering object
     pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
     sor.setInputCloud (input_cloud);
-    sor.setMeanK (40); // default: 10 越大越严格
-    sor.setStddevMulThresh (1.0); // default: 2.0 越小越严格
-    sor.filter (*cloud_filtered);
+    sor.setMeanK(mean_k); // default: 10 越大越严格
+    sor.setStddevMulThresh (std_thresh); // default: 2.0 越小越严格
+    sor.filter(*cloud_filtered);
 }
 
 
@@ -257,7 +278,7 @@ double time_inc(std::chrono::high_resolution_clock::time_point &t_end,
 int main(int argc, char** argv) {
 
 
-    if (argc != 4) {
+    if (argc != 2) {
         std::cerr << "Usage: " << argv[0] << " <input_pcd_file>" << std::endl;
         return -1;
     }
@@ -274,7 +295,7 @@ int main(int argc, char** argv) {
 
     // PassthroghFilter(cloud, cloud);
 
-    VoxelDownSample(cloud, filtered_cloud, 0.3);
+    VoxelDownSample(cloud, filtered_cloud, 1.0);
 
     pcl::PointXYZ min_pt, max_pt;
     pcl::getMinMax3D(*filtered_cloud, min_pt, max_pt); //
@@ -304,21 +325,45 @@ int main(int argc, char** argv) {
     }
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr ground_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr ground_filtered(new pcl::PointCloud<pcl::PointXYZ>);    
+    pcl::PointCloud<pcl::PointXYZ>::Ptr tree_top(new pcl::PointCloud<pcl::PointXYZ>);
 
     for (int i = 0; i < M; ++i) {
         for (int j = 0; j < N; ++j) {
             auto& grid_points = grids[i][j].points;
+            pcl::PointCloud<pcl::PointXYZ>::Ptr grid_cloud_outliers(new pcl::PointCloud<pcl::PointXYZ>);
             if (!grid_points.empty()) {
 
 
                 std::sort(grid_points.begin(), grid_points.end(), compareHeight);
 
                 size_t retain_count = static_cast<size_t>(grid_points.size() * 0.1);
+                size_t range_count = static_cast<size_t>(grid_points.size() * 0.05);
+
                 if (retain_count < 1) {
                     retain_count = 1;
                 }
+
+                size_t retain_top = static_cast<size_t>(grid_points.size() * 0.07);
+                if (retain_top < 1) {
+                    retain_top = 1;
+                }
+
+
                 // one point at the bottom of 10%
                 ground_cloud->points.push_back(pcl::PointXYZ((i + 0.5) * grid_width + min_pt.x, (j + 0.5) * grid_height + min_pt.y, grid_points[retain_count-1].z));
+
+                for (auto it = grid_points.begin()+range_count+range_count; it != grid_points.end(); ++it) {
+                    grid_cloud_outliers->points.push_back(pcl::PointXYZ(it->x, it->y, it->z));
+                }
+
+                for (auto it = grid_points.begin(); it != grid_points.begin() + retain_count - range_count; ++it) {
+                    grid_cloud_outliers->points.push_back(pcl::PointXYZ(it->x, it->y, it->z));
+                }
+
+                if (grid_cloud_outliers->points.size() > 50) {
+                    *tree_top += *grid_cloud_outliers;
+                }
 
                 // mean height of 10% pointcloud at bottom
                 // float height_sum = 0.0;
@@ -330,13 +375,16 @@ int main(int argc, char** argv) {
         }
     }
 
-    StatisticalRemoveOutlier(ground_cloud, ground_cloud);
+    std::cout << "top number: " << tree_top->points.size() << std::endl;
 
-    auto start = std::chrono::high_resolution_clock::now();
+    std::cout << "before statistical: " << ground_cloud->points.size() << std::endl;
+    StatisticalRemoveOutlier(ground_cloud, ground_filtered, 50, 0.35);
+    std::cout << "after statistical: " << ground_filtered->points.size() << std::endl;
+
 
     // obtain the height difference of bspline-fitting surface
     pcl::PointXYZ min_pt_g, max_pt_g;
-    pcl::getMinMax3D(*ground_cloud, min_pt_g, max_pt_g);
+    pcl::getMinMax3D(*ground_filtered, min_pt_g, max_pt_g);
 
 
     // print the range of ground point
@@ -369,13 +417,13 @@ int main(int argc, char** argv) {
     //     }
     // }
 
-    // for (const auto& point : ground_cloud->points) {
+    // for (const auto& point : ground_filtered->points) {
     //     float x_ptc = static_cast<float>(point.x);
     //     float y_ptc = static_cast<float>(point.y);
     //     cn_point[(x_ptc - min_pt.x) / grid_width + 1][(y_ptc - min_pt.y) / grid_height + 1](2) = point.z;
     // }
 
-    // std::vector<Point> ptc = PclPointCloudToVector(ground_cloud);
+    // std::vector<Point> ptc = PclPointCloudToVector(ground_filtered);
     // // // 插值填充空栅格
     // for (int i = 0; i < M+2; ++i) {
     //     for (int j = 0; j < N+2; ++j) {
@@ -404,45 +452,83 @@ int main(int argc, char** argv) {
     for (size_t i = 0; i < M_g; i++) {
         for (size_t j = 0; j < N_g; j++) {
             // cn_point[i][j] = Eigen::Vector3d(min_pt.x + i * grid_width, min_pt.y + j * grid_height, low_peak);
-            cn_point[i][j].x = min_pt_g.x + i * grid_width - grid_width;
-            cn_point[i][j].y = min_pt_g.y + j * grid_height - grid_height;
+            cn_point[i][j].x = min_pt_g.x + i * grid_width - grid_width * 1;
+            cn_point[i][j].y = min_pt_g.y + j * grid_height - grid_height * 1;
             cn_point[i][j].z = maxDouble;
         }
     }
 
-    for (const auto& point : ground_cloud->points) {
+    for (const auto& point : ground_filtered->points) {
         float x_ptc = static_cast<float>(point.x);
         float y_ptc = static_cast<float>(point.y);
         cn_point[(x_ptc - min_pt_g.x) / grid_width + 1][(y_ptc - min_pt_g.y) / grid_height + 1].z = point.z;
     }
 
-    std::vector<bspline::Point> ptc = PclPointCloudToVector(ground_cloud); // convert ground_cloud to vector<point>
+
+    // version 1
+    auto start_1 = std::chrono::high_resolution_clock::now();
+
+    // std::vector<bspline::Point> ptc = PclPointCloudToVector(ground_filtered); // convert ground_cloud to vector<point>
 
 
-    // // interpolate the empty grid(z-value is maxDoudble) with neareast ground points
+    // interpolate the empty grid(z-value is maxDoudble) with neareast ground points
+    // for (int i = 0; i < M_g; ++i) {
+    //     for (int j = 0; j < N_g; ++j) {
+    //         if (cn_point[i][j].z == maxDouble) {
+    //             double x_em = min_pt_g.x + i * grid_width - grid_width * 1; // convert to real coordiantes
+    //             double y_em = min_pt_g.y + j * grid_height - grid_height * 1;
+    //             cn_point[i][j].z = InterpolatePoint(ptc, x_em, y_em);
+    //         }
+    //     }
+    // }
+
+
+    // version 2
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_2d_presudo(new pcl::PointCloud<pcl::PointXYZ>);
+    for (auto point: ground_filtered->points) {
+        cloud_2d_presudo->points.push_back(pcl::PointXYZ(point.x, point.y, 0.0f));
+    }
+    pcl::KdTreeFLANN<pcl::PointXYZ> kdtree;
+    kdtree.setInputCloud(cloud_2d_presudo);
+
+    int k_kd = 3;
+    std::vector<int> point_idx_knsearch(k_kd);
+    std::vector<float> point_kdn_sq_dis(k_kd);
     for (int i = 0; i < M_g; ++i) {
         for (int j = 0; j < N_g; ++j) {
+            pcl::PointXYZ search_point;
             if (cn_point[i][j].z == maxDouble) {
-                double x_em = min_pt_g.x + i * grid_width - grid_width; // convert to real coordiantes
-                double y_em = min_pt_g.y + j * grid_height - grid_height;
-                cn_point[i][j].z = interpolatePoint(ptc, x_em, y_em);
+                search_point.x = min_pt_g.x + i * grid_width - grid_width * 1; // convert to real coordiantes
+                search_point.y = min_pt_g.y + j * grid_height - grid_height * 1;
+                search_point.z = 0.0;
+
+                if (kdtree.nearestKSearch(search_point, k_kd, point_idx_knsearch, point_kdn_sq_dis) > 0) {
+                    double height_sum = 0;
+                    for (size_t idx = 0; idx < point_idx_knsearch.size(); ++idx) {
+                      height_sum += ground_filtered->points[point_idx_knsearch[idx]].z;
+                    }
+                    cn_point[i][j].z = height_sum / k_kd;
+                    // std::cout << "complete kdtree search" << std::endl;
+                }
             }
         }
     }
 
+    auto end_1 = std::chrono::high_resolution_clock::now();
+    double duration = time_inc(end_1, start_1);
+    std::cout << "Bspline-fitting time: " << duration << " milliseconds" << std::endl;  
+
     // *************************test Bspline*******************************
 
-    int k = 3; // 阶数
     // create B-spline instance
     
-
+    int k = 3; // 阶数
     BspSurface surface(cn_point, k);
 
     // create the Bspline surface
-    // std::vector<Eigen::Vector3d> vertices;
+    // std::vector<bspline::Point> vertices;
     // surface.GetFittingSurface(vertices, 0.05); // 0.05为step
     
-
 
     std::vector<bspline::Point> test_points_set;
     bspline::Point test_point_;
@@ -450,40 +536,67 @@ int main(int argc, char** argv) {
     // double x_intr = std::stod(argv[2]);
     // double y_intr = std::stod(argv[3]);
 
-    double longti = std::stod(argv[2]);
-    double lati = std::stod(argv[3]);
+    // double longti = std::stod(argv[2]);
+    // double lati = std::stod(argv[3]);
     // convert the takeoff point to 
-    SetHome(HOME_LAT_, HOME_LON_);
+    // SetHome(HOME_LAT_, HOME_LON_);
 
 
-    double x_intr;
-    double y_intr;
+    // double x_intr;
+    // double y_intr;
 
-    x_intr = Lon2M(longti);
-    y_intr = Lat2M(lati);
+    // x_intr = Lon2M(longti);
+    // y_intr = Lat2M(lati);
+
+    // std::vector<std::vector<double>> LonandLat = {{118.7806222, 31.8351078},
+    //                                                 {118.7810634, 31.8347478},
+    //                                                 {118.7814473, 31.8344676},
+    //                                                 {118.7814108, 31.8348904},
+    //                                                 {118.7806701, 31.8351548},
+    //                                                 {118.7815429, 31.8352704},
+    //                                                 {118.7811188, 31.8351964},
+    //                                                 {118.7820834, 31.8346503}
+    //                                             };
 
 
-    if ((x_intr < min_pt_g.x || x_intr > max_pt_g.x || y_intr < min_pt_g.y || y_intr > max_pt_g.y)) {
-        std::cerr << "the data point is out of the range" << std::endl;
-        std::exit(EXIT_FAILURE);
-    }
+    // for (int i = 0; i < LonandLat.size(); i++) {
+        
+    //     double longti = LonandLat[i][0];
+    //     double lati = LonandLat[i][1];
+
+    //     x_intr = Lon2M(longti);
+    //     y_intr = Lat2M(lati);
+
+    //     if ((x_intr < min_pt.x || x_intr > max_pt.x || y_intr < min_pt.y || y_intr > max_pt.y)) {
+    //         std::cerr << "the data point is out of the range" << std::endl;
+    //         std::exit(EXIT_FAILURE);
+    //     }
+    //     test_point_ = surface.GetFittingPoint(x_intr,  y_intr);
+
+    //     std::cout << std::fixed << std::setprecision(8) << "x: " << x_intr << " " << "y: " << y_intr << std::endl;
+    //     std::cout << std::fixed << std::setprecision(8) << "latitude: " << lati << " " << "longitude: " << longti << " " << "height: " << test_point_.z + 21.48 <<  std::endl;
+    //     test_points_set.push_back(bspline::Point(x_intr, y_intr, test_point_.z));
+    // }
+
+
+    // if ((x_intr < min_pt_g.x || x_intr > max_pt_g.x || y_intr < min_pt_g.y || y_intr > max_pt_g.y)) {
+    //     std::cerr << "the data point is out of the range" << std::endl;
+    //     std::exit(EXIT_FAILURE);
+    // }
 
     // Eigen::Vector3d home_point_ = surface.GetFittingPoint(home_x_, home_y_);
     // std::cout << std::fixed << std::setprecision(8) << "latitude: " << home_x_ << " " << "longitude: " << home_y_ << " " << "height: " << home_point_ <<  std::endl;
     
-    test_point_ = surface.GetFittingPoint(x_intr,  y_intr);
+    // test_point_ = surface.GetFittingPoint(x_intr,  y_intr);
 
 
 
-    auto end = std::chrono::high_resolution_clock::now();
-    double duration = time_inc(end, start);
-    std::cout << "Bspline-fitting time: " << duration << " milliseconds" << std::endl;  
+
     // double lat_ = M2Lat(x_intr);
     // double lon_ = M2Lon(y_intr);
 
-    // std::cout << std::fixed << std::setprecision(8) << "latitude: " << lat_ << " " << "longitude: " << lon_ << " " << "height: " << test_point_(2) + 25.0 <<  std::endl;
-    std::cout << std::fixed << std::setprecision(11) << "x: " << x_intr << " " << "y: " << y_intr << std::endl;
-    std::cout << std::fixed << std::setprecision(11) << "latitude: " << lati << " " << "longitude: " << longti << " " << "height: " << test_point_.z + 26.0 <<  std::endl;
+    // std::cout << std::fixed << std::setprecision(11) << "x: " << x_intr << " " << "y: " << y_intr << std::endl;
+    // std::cout << std::fixed << std::setprecision(11) << "latitude: " << lati << " " << "longitude: " << longti << " " << "height: " << test_point_.z + 21.48 <<  std::endl;
 
 
     std::cout << "The low peak is: " << min_pt_g.z << std::endl;
@@ -491,46 +604,56 @@ int main(int argc, char** argv) {
     std::cout << "The height difference is: " << max_pt_g.z - min_pt_g.z << std::endl;
 
 
-    // 提取控制点
-    // std::vector<bspline::Point> control_points;
-    // for (const auto& row : cn_point)
-    // {
-    //     for (const auto& point : row)
-    //     {
-    //         control_points.push_back(point);
-    //     }
-    // }
-
-
     // pcl::PointCloud<pcl::PointXYZ>::Ptr bsplline_cloud(new pcl::PointCloud<pcl::PointXYZ>);
     // for (const auto& point : vertices)
     // {
-    //     bsplline_cloud->points.push_back(pcl::PointXYZ(point[0], point[1], point[2]));
+    //     bsplline_cloud->points.push_back(pcl::PointXYZ(point.x, point.y, point.z));
     // }
 
-    // std::string out_bspline_folder = "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/bspline_result";
+    std::string out_bspline_folder = "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/bspline_result";
     // std::string output_bspline_file = out_bspline_folder + "/" + "simple_bspline_hill" + ".pcd";  
     // pcl::io::savePCDFileBinary(output_bspline_file, *bsplline_cloud);
 
 
-    // pcl::PointCloud<pcl::PointXYZ>::Ptr control_point_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    // for (const auto& point : control_points)
+    pcl::PointCloud<pcl::PointXYZ>::Ptr control_point_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    // 提取控制点
+    std::vector<bspline::Point> control_points;
+    for (const auto& row : cn_point)
+    {
+        for (const auto& point : row)
+        {
+            control_point_cloud->points.push_back(pcl::PointXYZ(point.x, point.y, point.z));
+        }
+    }
+
+    std::string output_control_file = out_bspline_folder + "/" + "control_point" + ".pcd";  
+    pcl::io::savePCDFileBinary(output_control_file, *control_point_cloud);
+
+
+    std::string output_downsample_file = out_bspline_folder + "/" + "downsample" + ".pcd";  
+    pcl::io::savePCDFileBinary(output_downsample_file, *filtered_cloud);
+
+
+    std::string output_tree_top_file = out_bspline_folder + "/" + "tree_top" + ".pcd";  
+    pcl::io::savePCDFileBinary(output_tree_top_file, *tree_top);
+
+    std::string output_ground_file = out_bspline_folder + "/" + "ground" + ".pcd";  
+    pcl::io::savePCDFileBinary(output_ground_file, *ground_filtered);
+
+    // pcl::PointCloud<pcl::PointXYZ>::Ptr test_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    // for (const auto& point : test_points_set)
     // {
-    //     control_point_cloud->points.push_back(pcl::PointXYZ(point[0], point[1], point[2]));
+    //     test_cloud->points.push_back(pcl::PointXYZ(point.x, point.y, point.z));
     // }
 
-    // std::string output_control_file = out_bspline_folder + "/" + "control_point" + ".pcd";  
-    // pcl::io::savePCDFileBinary(output_control_file, *control_point_cloud);
-
-
-    // std::string output_downsample_file = out_bspline_folder + "/" + "downsample" + ".pcd";  
-    // pcl::io::savePCDFileBinary(output_downsample_file, *filtered_cloud);
-
+  
+    // std::string output_test_file = out_bspline_folder + "/" + "test_point" + ".pcd";  
+    // pcl::io::savePCDFileBinary(output_test_file, *test_cloud);  
 
     // std::vector<bspline::Point> knot_points;
     // knot_points = surface.GetKnotPoints();
 
-    // // // 可视化拟合点和控制点
+    // // 可视化拟合点和控制点
     // VisualizePointCloudV2(filtered_cloud, vertices, control_points);
 
     return 0;

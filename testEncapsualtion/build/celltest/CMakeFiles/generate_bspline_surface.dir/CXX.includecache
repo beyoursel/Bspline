@@ -33,6 +33,8 @@ pcl/filters/passthrough.h
 -
 pcl/filters/statistical_outlier_removal.h
 -
+pcl/kdtree/kdtree_flann.h
+-
 pcl/common/common.h
 -
 chrono

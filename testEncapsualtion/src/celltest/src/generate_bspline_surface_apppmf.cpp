@@ -220,14 +220,15 @@ bool compareHeight(const bspline::Point& a, const bspline::Point& b) {
 }
 
 
-void StatisticalRemoveOutlier(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud , pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered) {
-      // Create the filtering object
+void StatisticalRemoveOutlier(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud , pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered, int mean_k, float std_thresh) {
+    // Create the filtering object
     pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
     sor.setInputCloud (input_cloud);
-    sor.setMeanK (40); // default: 10 越大越严格
-    sor.setStddevMulThresh (1.0); // default: 2.0 越小越严格
-    sor.filter (*cloud_filtered);
+    sor.setMeanK(mean_k); // default: 10 越大越严格
+    sor.setStddevMulThresh (std_thresh); // default: 2.0 越小越严格
+    sor.filter(*cloud_filtered);
 }
+
 
 
 void PassthroghFilter(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud , pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered) {
@@ -309,9 +310,9 @@ int main(int argc, char** argv) {
     pcl::PointCloud<pcl::PointXYZ>::Ptr voxel_cloud(new pcl::PointCloud<pcl::PointXYZ>);
     PassthroghFilter(cloud, cloud);
 
-    VoxelDownSample(cloud, voxel_cloud, 0.3);
+    VoxelDownSample(cloud, voxel_cloud, 1.0);
 
-    Approximate_PMF_Segment(voxel_cloud, filtered_cloud, 10, 1.0);
+    Approximate_PMF_Segment(voxel_cloud, filtered_cloud, 3, 1.0);
 
     auto start = std::chrono::high_resolution_clock::now();
 
@@ -343,7 +344,7 @@ int main(int argc, char** argv) {
     }
 
     pcl::PointCloud<pcl::PointXYZ>::Ptr ground_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-
+    pcl::PointCloud<pcl::PointXYZ>::Ptr ground_filtered(new pcl::PointCloud<pcl::PointXYZ>);
     for (int i = 0; i < M; ++i) {
         for (int j = 0; j < N; ++j) {
             auto& grid_points = grids[i][j].points;
@@ -359,13 +360,13 @@ int main(int argc, char** argv) {
         }
     }
 
-    StatisticalRemoveOutlier(ground_cloud, ground_cloud);
+    StatisticalRemoveOutlier(ground_cloud, ground_filtered, 50, 0.35);
 
 
 
     // obtain the height difference of bspline-fitting surface
     pcl::PointXYZ min_pt_g, max_pt_g;
-    pcl::getMinMax3D(*ground_cloud, min_pt_g, max_pt_g);
+    pcl::getMinMax3D(*ground_filtered, min_pt_g, max_pt_g);
 
 
     // print the range of ground point
@@ -405,24 +406,56 @@ int main(int argc, char** argv) {
         }
     }
 
-    for (const auto& point : ground_cloud->points) {
+    for (const auto& point : ground_filtered->points) {
         float x_ptc = static_cast<float>(point.x);
         float y_ptc = static_cast<float>(point.y);
         cn_point[(x_ptc - min_pt_g.x) / grid_width + 1][(y_ptc - min_pt_g.y) / grid_height + 1].z = point.z;
     }
 
-    std::vector<bspline::Point> ptc = PclPointCloudToVector(ground_cloud);
-    // // 插值填充空栅格
+    // version 1
+    // std::vector<bspline::Point> ptc = PclPointCloudToVector(ground_filtered);
+    // // // 插值填充空栅格
+    // for (int i = 0; i < M_g; ++i) {
+    //     for (int j = 0; j < N_g; ++j) {
+    //         if (cn_point[i][j].z == maxDouble) {
+    //             double x_em = min_pt_g.x + i * grid_width - grid_width;
+    //             double y_em = min_pt_g.y + j * grid_height - grid_height;
+    //             cn_point[i][j].z = interpolatePoint(ptc, x_em, y_em);
+    //         }
+    //     }
+    // }
+
+
+    // version 2
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_2d_presudo(new pcl::PointCloud<pcl::PointXYZ>);
+    for (auto point: ground_filtered->points) {
+        cloud_2d_presudo->points.push_back(pcl::PointXYZ(point.x, point.y, 0.0f));
+    }
+    pcl::KdTreeFLANN<pcl::PointXYZ> kdtree;
+    kdtree.setInputCloud(cloud_2d_presudo);
+
+    int k_kd = 3;
+    std::vector<int> point_idx_knsearch(k_kd);
+    std::vector<float> point_kdn_sq_dis(k_kd);
     for (int i = 0; i < M_g; ++i) {
         for (int j = 0; j < N_g; ++j) {
+            pcl::PointXYZ search_point;
             if (cn_point[i][j].z == maxDouble) {
-                double x_em = min_pt_g.x + i * grid_width - grid_width;
-                double y_em = min_pt_g.y + j * grid_height - grid_height;
-                cn_point[i][j].z = interpolatePoint(ptc, x_em, y_em);
+                search_point.x = min_pt_g.x + i * grid_width - grid_width * 1; // convert to real coordiantes
+                search_point.y = min_pt_g.y + j * grid_height - grid_height * 1;
+                search_point.z = 0.0;
+
+                if (kdtree.nearestKSearch(search_point, k_kd, point_idx_knsearch, point_kdn_sq_dis) > 0) {
+                    double height_sum = 0;
+                    for (size_t idx = 0; idx < point_idx_knsearch.size(); ++idx) {
+                      height_sum += ground_filtered->points[point_idx_knsearch[idx]].z;
+                    }
+                    cn_point[i][j].z = height_sum / k_kd;
+                    // std::cout << "complete kdtree search" << std::endl;
+                }
             }
         }
     }
-
 
     // *************************test Bspline*******************************
 
@@ -433,8 +466,8 @@ int main(int argc, char** argv) {
     BspSurface surface(cn_point, k);
 
     // create the Bspline surface
-    std::vector<bspline::Point> vertices;
-    surface.GetFittingSurface(vertices, 0.05); // 0.05为step
+    // std::vector<bspline::Point> vertices;
+    // surface.GetFittingSurface(vertices, 0.05); // 0.05为step
     
     std::vector<bspline::Point> test_points_set;
     bspline::Point test_point_;
@@ -455,13 +488,13 @@ int main(int argc, char** argv) {
     // y_intr = Lat2M(lati);
     std::vector<std::vector<double>> LonandLat = {{118.7806222, 31.8351078},
                                                     {118.7810634, 31.8347478},
+                                                    {118.7814473, 31.8344676},
                                                     {118.7814108, 31.8348904},
                                                     {118.7806701, 31.8351548},
                                                     {118.7815429, 31.8352704},
                                                     {118.7811188, 31.8351964},
                                                     {118.7820834, 31.8346503}
                                                 };
-
 
     for (int i = 0; i < LonandLat.size(); i++) {
         
@@ -478,7 +511,7 @@ int main(int argc, char** argv) {
         test_point_ = surface.GetFittingPoint(x_intr,  y_intr);
 
         std::cout << std::fixed << std::setprecision(8) << "x: " << x_intr << " " << "y: " << y_intr << std::endl;
-        std::cout << std::fixed << std::setprecision(8) << "latitude: " << lati << " " << "longitude: " << longti << " " << "height: " << test_point_.z + 26.0 <<  std::endl;
+        std::cout << std::fixed << std::setprecision(8) << "latitude: " << lati << " " << "longitude: " << longti << " " << "height: " << test_point_.z + 21.48 <<  std::endl;
         test_points_set.push_back(bspline::Point(x_intr, y_intr, test_point_.z));
     }
 
@@ -497,7 +530,7 @@ int main(int argc, char** argv) {
 
 
     // std::cout << std::fixed << std::setprecision(8) << "x: " << x_intr << " " << "y: " << y_intr << std::endl;
-    // std::cout << std::fixed << std::setprecision(8) << "latitude: " << lati << " " << "longitude: " << longti << " " << "height: " << test_point_.z + 26.0 <<  std::endl;
+    // std::cout << std::fixed << std::setprecision(8) << "latitude: " << lati << " " << "longitude: " << longti << " " << "height: " << test_point_.z + 21.48 <<  std::endl;
 
     auto end = std::chrono::high_resolution_clock::now();
     double duration = time_inc(end, start);
@@ -509,53 +542,53 @@ int main(int argc, char** argv) {
 
 
     // // 提取控制点
-    std::vector<bspline::Point> control_points;
-    for (const auto& row : cn_point)
-    {
-        for (const auto& point : row)
-        {
-            control_points.push_back(point);
-        }
-    }
+    // std::vector<bspline::Point> control_points;
+    // for (const auto& row : cn_point)
+    // {
+    //     for (const auto& point : row)
+    //     {
+    //         control_points.push_back(point);
+    //     }
+    // }
 
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr bsplline_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    for (const auto& point : vertices)
-    {
-        bsplline_cloud->points.push_back(pcl::PointXYZ(point.x, point.y, point.z));
-    }
+    // pcl::PointCloud<pcl::PointXYZ>::Ptr bsplline_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    // for (const auto& point : vertices)
+    // {
+    //     bsplline_cloud->points.push_back(pcl::PointXYZ(point.x, point.y, point.z));
+    // }
 
-    std::string out_bspline_folder = "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/bspline_result";
-    std::string output_bspline_file = out_bspline_folder + "/" + "simple_bspline_hill" + ".pcd";  
-    pcl::io::savePCDFileBinary(output_bspline_file, *bsplline_cloud);
-
-
-    pcl::PointCloud<pcl::PointXYZ>::Ptr control_point_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    for (const auto& point : control_points)
-    {
-        control_point_cloud->points.push_back(pcl::PointXYZ(point.x, point.y, point.z));
-    }
-
-    std::string output_control_file = out_bspline_folder + "/" + "control_point" + ".pcd";  
-    pcl::io::savePCDFileBinary(output_control_file, *control_point_cloud);
+    // std::string out_bspline_folder = "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/bspline_result";
+    // std::string output_bspline_file = out_bspline_folder + "/" + "simple_bspline_hill" + ".pcd";  
+    // pcl::io::savePCDFileBinary(output_bspline_file, *bsplline_cloud);
 
 
-    std::string output_downsample_file = out_bspline_folder + "/" + "downsample" + ".pcd";  
-    pcl::io::savePCDFileBinary(output_downsample_file, *filtered_cloud);
+    // pcl::PointCloud<pcl::PointXYZ>::Ptr control_point_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    // for (const auto& point : control_points)
+    // {
+    //     control_point_cloud->points.push_back(pcl::PointXYZ(point.x, point.y, point.z));
+    // }
+
+    // std::string output_control_file = out_bspline_folder + "/" + "control_point" + ".pcd";  
+    // pcl::io::savePCDFileBinary(output_control_file, *control_point_cloud);
+
+
+    // std::string output_downsample_file = out_bspline_folder + "/" + "downsample" + ".pcd";  
+    // pcl::io::savePCDFileBinary(output_downsample_file, *filtered_cloud);
 
 
     // std::vector<bspline::Point> knot_points;
     // knot_points = surface.GetKnotPoints();
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr test_cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    for (const auto& point : test_points_set)
-    {
-        test_cloud->points.push_back(pcl::PointXYZ(point.x, point.y, point.z));
-    }
+    // pcl::PointCloud<pcl::PointXYZ>::Ptr test_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    // for (const auto& point : test_points_set)
+    // {
+    //     test_cloud->points.push_back(pcl::PointXYZ(point.x, point.y, point.z));
+    // }
 
 
-    std::string output_test_file = out_bspline_folder + "/" + "test_points" + ".pcd";  
-    pcl::io::savePCDFileBinary(output_test_file, *test_cloud);
+    // std::string output_test_file = out_bspline_folder + "/" + "test_points" + ".pcd";  
+    // pcl::io::savePCDFileBinary(output_test_file, *test_cloud);
 
 
     // 可视化拟合点和控制点
