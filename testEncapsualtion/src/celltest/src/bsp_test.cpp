@@ -15,6 +15,7 @@
 #include <limits>
 #include <cmath>
 #include <iomanip>
+#include <pcl/filters/statistical_outlier_removal.h>
 #include "bspline_api.h"
 
 
@@ -166,6 +167,14 @@ void VoxelDownSample(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud , pcl::Poin
     sor.filter(*cloud_filtered);
 }
 
+void StatisticalRemoveOutlier(pcl::PointCloud<pcl::PointXYZ>::Ptr input_cloud , pcl::PointCloud<pcl::PointXYZ>::Ptr cloud_filtered, int mean_k, float std_thresh) {
+    // Create the filtering object
+    pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
+    sor.setInputCloud (input_cloud);
+    sor.setMeanK(mean_k); // default: 10 越大越严格
+    sor.setStddevMulThresh (std_thresh); // default: 2.0 越小越严格
+    sor.filter(*cloud_filtered);
+}
 
 double time_inc(std::chrono::high_resolution_clock::time_point &t_end,
                 std::chrono::high_resolution_clock::time_point &t_begin) {
