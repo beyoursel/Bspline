@@ -29,7 +29,6 @@ float home_x_;
 float home_y_;
 
 
-using namespace bspline;
 using namespace std;
 
 // 定义点的结构体
@@ -77,11 +76,11 @@ double Lon2M(double longitude)
 
 
 // 将pcl::PointCloud<pcl::PointXYZ>::Ptr转换为std::vector<Point>
-std::vector<bspline::Point> PclPointCloudToVector(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
-    std::vector<bspline::Point> points;
+std::vector<Point> PclPointCloudToVector(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
+    std::vector<Point> points;
 
     for (const auto& pt : cloud->points) {
-        bspline::Point p;
+        Point p;
         p.x = pt.x;
         p.y = pt.y;
         p.z = pt.z;
@@ -93,8 +92,8 @@ std::vector<bspline::Point> PclPointCloudToVector(pcl::PointCloud<pcl::PointXYZ>
 
 
 void VisualizePointCloudV2(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
-    const std::vector<bspline::Point>& vertices,
-    const std::vector<bspline::Point>&  control_points)
+    const std::vector<Point>& vertices,
+    const std::vector<Point>&  control_points)
 {
     pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
     viewer->setBackgroundColor(0, 0, 0);
@@ -136,7 +135,7 @@ void VisualizePointCloudV2(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
 
 
 void VisualizePointCloud(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
-    const std::vector<bspline::Point>& vertices,
+    const std::vector<Point>& vertices,
     pcl::PointCloud<pcl::PointXYZ>::Ptr  control_points)
 {
     pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
@@ -186,8 +185,8 @@ float GetAverageHeight(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud) {
 }
 
 // 插值函数：使用KNN（k近邻）算法来填充空栅格
-float interpolatePoint(const std::vector<bspline::Point>& points, double x, double y, int k = 3) {
-    std::priority_queue<std::pair<double, bspline::Point>> pq;
+float interpolatePoint(const std::vector<Point>& points, double x, double y, int k = 3) {
+    std::priority_queue<std::pair<double, Point>> pq;
 
     for (const auto& pt : points) {
         double dist = std::sqrt((pt.x - x) * (pt.x - x) + (pt.y - y) * (pt.y - y));
@@ -211,11 +210,11 @@ float interpolatePoint(const std::vector<bspline::Point>& points, double x, doub
 
 
 struct Grid {
-    std::vector<bspline::Point> points;
+    std::vector<Point> points;
 };
 
 
-bool compareHeight(const bspline::Point& a, const bspline::Point& b) {
+bool compareHeight(const Point& a, const Point& b) {
     return a.z < b.z;
 }
 
@@ -392,7 +391,7 @@ int main(int argc, char** argv) {
     int M_g = static_cast<int>(x_range_g / grid_width) + 1 + 2;
     int N_g = static_cast<int>(y_range_g / grid_height) + 1 + 2;
 
-    std::vector<std::vector<bspline::Point>> cn_point(M_g, std::vector<bspline::Point>(N_g));
+    std::vector<std::vector<Point>> cn_point(M_g, std::vector<Point>(N_g));
     double maxDouble = std::numeric_limits<double>::max();
 
     std::cout << x_range_g << " " << y_range_g << std::endl;
@@ -413,7 +412,7 @@ int main(int argc, char** argv) {
     }
 
     // version 1
-    // std::vector<bspline::Point> ptc = PclPointCloudToVector(ground_filtered);
+    // std::vector<Point> ptc = PclPointCloudToVector(ground_filtered);
     // // // 插值填充空栅格
     // for (int i = 0; i < M_g; ++i) {
     //     for (int j = 0; j < N_g; ++j) {
@@ -466,11 +465,11 @@ int main(int argc, char** argv) {
     BspSurface surface(cn_point, k);
 
     // create the Bspline surface
-    // std::vector<bspline::Point> vertices;
+    // std::vector<Point> vertices;
     // surface.GetFittingSurface(vertices, 0.05); // 0.05为step
     
-    std::vector<bspline::Point> test_points_set;
-    bspline::Point test_point_;
+    std::vector<Point> test_points_set;
+    Point test_point_;
 
     // double x_intr = std::stod(argv[2]);
     // double y_intr = std::stod(argv[3]);
@@ -512,7 +511,7 @@ int main(int argc, char** argv) {
 
         std::cout << std::fixed << std::setprecision(8) << "x: " << x_intr << " " << "y: " << y_intr << std::endl;
         std::cout << std::fixed << std::setprecision(8) << "latitude: " << lati << " " << "longitude: " << longti << " " << "height: " << test_point_.z + 21.48 <<  std::endl;
-        test_points_set.push_back(bspline::Point(x_intr, y_intr, test_point_.z));
+        test_points_set.push_back(Point(x_intr, y_intr, test_point_.z));
     }
 
     // if ((x_intr < min_pt.x || x_intr > max_pt.x || y_intr < min_pt.y || y_intr > max_pt.y)) {
@@ -542,7 +541,7 @@ int main(int argc, char** argv) {
 
 
     // // 提取控制点
-    // std::vector<bspline::Point> control_points;
+    // std::vector<Point> control_points;
     // for (const auto& row : cn_point)
     // {
     //     for (const auto& point : row)
@@ -577,7 +576,7 @@ int main(int argc, char** argv) {
     // pcl::io::savePCDFileBinary(output_downsample_file, *filtered_cloud);
 
 
-    // std::vector<bspline::Point> knot_points;
+    // std::vector<Point> knot_points;
     // knot_points = surface.GetKnotPoints();
 
     // pcl::PointCloud<pcl::PointXYZ>::Ptr test_cloud(new pcl::PointCloud<pcl::PointXYZ>);

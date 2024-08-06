@@ -1,8 +1,8 @@
-# Install script for directory: /media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest
+# Install script for directory: /media/mydisk/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/install")
+  set(CMAKE_INSTALL_PREFIX "/media/mydisk/Doc/daily_work/work_tg/Bspline/testEncapsualtion/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,17 +38,17 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/celltest/catkin_generated/installspace/celltest.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/media/mydisk/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/celltest/catkin_generated/installspace/celltest.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/celltest/cmake" TYPE FILE FILES
-    "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/celltest/catkin_generated/installspace/celltestConfig.cmake"
-    "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/celltest/catkin_generated/installspace/celltestConfig-version.cmake"
+    "/media/mydisk/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/celltest/catkin_generated/installspace/celltestConfig.cmake"
+    "/media/mydisk/Doc/daily_work/work_tg/Bspline/testEncapsualtion/build/celltest/catkin_generated/installspace/celltestConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/celltest" TYPE FILE FILES "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/celltest" TYPE FILE FILES "/media/mydisk/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest/package.xml")
 endif()
 

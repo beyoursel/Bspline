@@ -6,13 +6,19 @@
 
 #IncludeRegexTransform: 
 
-/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest/include/bspline.h
+/media/mydisk/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest/include/bspline.h
 vector
 -
 iostream
 -
 
-/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest/src/generate_bspline_surface.cpp
+/media/mydisk/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest/src/bspline.cpp
+bspline.h
+/media/mydisk/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest/src/bspline.h
+cmath
+-
+
+/media/mydisk/Doc/daily_work/work_tg/Bspline/testEncapsualtion/src/celltest/src/generate_bspline_surface.cpp
 iostream
 -
 vector

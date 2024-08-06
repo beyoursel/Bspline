@@ -1,7 +1,6 @@
 #include "bspline.h"
 #include <cmath>
 
-namespace bspline {
 
 BspSurface::BspSurface(const std::vector<std::vector<Point>>& cn_point, int k) 
 {
@@ -260,8 +259,8 @@ Point BspSurface::GetFittingPoint(double x, double y)
         }
     }
 
-    std::cout << "knot_x[0]: " << knot_x[0] << " " << "knot_x[1]: " << knot_x[1] << std::endl;
-    std::cout << "knot_x[-2]: " << knot_x[knot_x.size()-2] << " " << "knot_x[-1]: " << knot_x[knot_x.size()-1] << std::endl;
+    // std::cout << "knot_x[0]: " << knot_x[0] << " " << "knot_x[1]: " << knot_x[1] << std::endl;
+    // std::cout << "knot_x[-2]: " << knot_x[knot_x.size()-2] << " " << "knot_x[-1]: " << knot_x[knot_x.size()-1] << std::endl;
 
 
     for (int i = m_ku_ - 1; i <= m_kv_ - 1; i++) {
@@ -273,8 +272,8 @@ Point BspSurface::GetFittingPoint(double x, double y)
         }
     }
 
-    std::cout << "knot_y[0]: " << knot_y[0] << " " << "knot_y[1]: " << knot_y[1] << std::endl;
-    std::cout << "knot_y[-2]: " << knot_y[knot_y.size()-2] << " " << "knot_y[-1]: " << knot_y[knot_y.size()-1] << std::endl;
+    // std::cout << "knot_y[0]: " << knot_y[0] << " " << "knot_y[1]: " << knot_y[1] << std::endl;
+    // std::cout << "knot_y[-2]: " << knot_y[knot_y.size()-2] << " " << "knot_y[-1]: " << knot_y[knot_y.size()-1] << std::endl;
 
     int knot_grid_x;
     int knot_grid_y;
@@ -301,6 +300,4 @@ Point BspSurface::GetFittingPoint(double x, double y)
 
 
     return temp1;
-}
-
 }

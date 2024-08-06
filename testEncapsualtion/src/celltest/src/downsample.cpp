@@ -18,7 +18,7 @@
 
 
 void VisualizePointCloud(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
-    const std::vector<bspline::Point>& vertices,
+    const std::vector<Point>& vertices,
     pcl::PointCloud<pcl::PointXYZ>::Ptr  control_points)
 {
     pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
@@ -60,11 +60,11 @@ void VisualizePointCloud(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
 
 
 struct Grid {
-    std::vector<bspline::Point> points;
+    std::vector<Point> points;
 };
 
 
-bool compareHeight(const bspline::Point& a, const bspline::Point& b) {
+bool compareHeight(const Point& a, const Point& b) {
     return a.z < b.z;
 }
 

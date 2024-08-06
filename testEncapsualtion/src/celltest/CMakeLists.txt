@@ -166,6 +166,7 @@ add_definitions(${PCL_DEFINITIONS})
 add_executable(generate_bspline_surface src/generate_bspline_surface.cpp src/bspline.cpp)
 add_executable(generate_bspline_surface_apppmf src/generate_bspline_surface_apppmf.cpp src/bspline.cpp)
 add_executable(downsample src/downsample.cpp)
+add_executable(bsp_test src/bsp_test.cpp src/bspline_api.cpp src/bspline.cpp)
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -199,6 +200,13 @@ target_link_libraries(downsample
   ${catkin_LIBRARIES}
   ${PCL_LIBRARIES}  
 )
+
+target_link_libraries(bsp_test
+
+  ${catkin_LIBRARIES}
+  ${PCL_LIBRARIES}  
+)
+
 # find_package(Boost REQUIRED COMPONENTS filesystem)
 # include_directories(${Boost_INCLUDE_DIRS})
 # target_link_libraries(plane_model ${Boost_LIBRARIES})

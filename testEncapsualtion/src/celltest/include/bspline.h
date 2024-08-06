@@ -5,9 +5,6 @@
 #include <iostream>
 
 
-namespace bspline {
-
-
 struct Point {
 
     Point() : x(0.0), y(0.0), z(0.0) {}
@@ -89,7 +86,5 @@ private:
 	std::vector<double> m_knots_u_; // u向节点向量 u_0, ..., u_(nu+ku)
 	std::vector<double> m_knots_v_; // v向节点向量 v_0, ..., v_(nv+kv)
 };
-
-}
 
 #endif

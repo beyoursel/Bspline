@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/devel/lib/celltest/downsample"
-  "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/devel/lib/celltest/downsample.pdb"
+  "/media/mydisk/Doc/daily_work/work_tg/Bspline/testEncapsualtion/devel/lib/celltest/downsample"
+  "/media/mydisk/Doc/daily_work/work_tg/Bspline/testEncapsualtion/devel/lib/celltest/downsample.pdb"
   "CMakeFiles/downsample.dir/src/downsample.cpp.o"
 )
 

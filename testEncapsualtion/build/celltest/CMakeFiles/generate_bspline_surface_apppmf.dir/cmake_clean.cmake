@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/devel/lib/celltest/generate_bspline_surface_apppmf"
-  "/media/taole/HHD/Doc/daily_work/work_tg/Bspline/testEncapsualtion/devel/lib/celltest/generate_bspline_surface_apppmf.pdb"
+  "/media/mydisk/Doc/daily_work/work_tg/Bspline/testEncapsualtion/devel/lib/celltest/generate_bspline_surface_apppmf"
+  "/media/mydisk/Doc/daily_work/work_tg/Bspline/testEncapsualtion/devel/lib/celltest/generate_bspline_surface_apppmf.pdb"
   "CMakeFiles/generate_bspline_surface_apppmf.dir/src/bspline.cpp.o"
   "CMakeFiles/generate_bspline_surface_apppmf.dir/src/generate_bspline_surface_apppmf.cpp.o"
 )
