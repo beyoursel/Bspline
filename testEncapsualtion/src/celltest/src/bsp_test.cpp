@@ -6,6 +6,7 @@
 #include <pcl/point_cloud.h>
 #include <pcl/visualization/pcl_visualizer.h>
 #include <pcl/filters/voxel_grid.h>
+#include <pcl/filters/statistical_outlier_removal.h>
 #include <pcl/common/common.h>
 #include <chrono>
 #include <boost/filesystem.hpp>
@@ -15,7 +16,6 @@
 #include <limits>
 #include <cmath>
 #include <iomanip>
-#include <pcl/filters/statistical_outlier_removal.h>
 #include "bspline_api.h"
 
 
@@ -64,19 +64,12 @@ double Lon2M(double longitude)
 
 
 void VisualizePointCloudV2(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
-    const std::vector<Point>& vertices,
     const std::vector<Point>&  control_points)
 {
     pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
     viewer->setBackgroundColor(0, 0, 0);
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
     pcl::PointCloud<pcl::PointXYZ>::Ptr controlCloud(new pcl::PointCloud<pcl::PointXYZ>);
-
-    for (const auto& vertex : vertices)
-    {
-        cloud->points.push_back(pcl::PointXYZ(vertex.x, vertex.y, vertex.z));
-    }
 
     for (const auto& point : control_points)
     {
@@ -85,9 +78,6 @@ void VisualizePointCloudV2(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
 
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> cloud_color_handler(downsample_cloud, 255, 255, 255);
     viewer->addPointCloud(downsample_cloud, cloud_color_handler, "downsample_points");
-
-    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> downsample_color_handler(cloud, 0, 255, 0);
-    viewer->addPointCloud(cloud, downsample_color_handler, "fitted_points");
 
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> control_color_handler(controlCloud, 255, 0, 0);
     viewer->addPointCloud(controlCloud, control_color_handler, "control_points");
@@ -200,13 +190,15 @@ int main(int argc, char** argv) {
 
     // auto start = std::chrono::high_resolution_clock::now();
     pcl::PointCloud<pcl::PointXYZ>::Ptr filtered_cloud(new pcl::PointCloud<pcl::PointXYZ>);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr filtered_ground(new pcl::PointCloud<pcl::PointXYZ>);
 
     // PassthroghFilter(cloud, cloud);
 
     VoxelDownSample(cloud, filtered_cloud, 1.0);
 
-    
-    BspFitting bsp_fit(filtered_cloud, 5.0, 3);
+    StatisticalRemoveOutlier(filtered_cloud, filtered_ground, 50, 1.0);
+
+    BspFitting bsp_fit(filtered_ground, 5.0, 3);
 
     // Point ptc = bsp_fit.GetBsplinePoint(0, 0);
 
@@ -246,8 +238,23 @@ int main(int argc, char** argv) {
         std::cout << std::fixed << std::setprecision(8) << "x: " << x_intr << " " << "y: " << y_intr << std::endl;
         std::cout << std::fixed << std::setprecision(8) << "latitude: " << lati << " " << "longitude: " << longti << " " << "height: " << test_point_.z + 21.48 <<  std::endl;
     }
+
+
+    // std::vector<std::vector<Point>> ctr_points_set = bsp_fit.ctr_points_; // 需要修改ctr_points_的权限,目前为private
+
+    // // 提取控制点
+    // std::vector<Point> control_points;
+    // for (const auto& row : ctr_points_set)
+    // {
+    //     for (const auto& point : row)
+    //     {
+    //         control_points.push_back(point);
+    //     }
+    // }
+
+
     // // 可视化拟合点和控制点
-    // VisualizePointCloudV2(filtered_cloud, vertices, control_points);
+    // VisualizePointCloudV2(filtered_ground, control_points);
 
     return 0;
 }

@@ -3,6 +3,11 @@
 
 
 Point BspFitting::GetBsplinePoint(double x, double y) {
+
+        if ((x < min_pt_.x || x > max_pt_.x || y < min_pt_.y || y > max_pt_.y)) {
+            std::cerr << "the query point is out of the range" << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
         return bsp_.GetFittingPoint(x, y);
     }
 
@@ -13,10 +18,9 @@ void BspFitting::GetControlPoint(PointCloud cloud) {
     int M = static_cast<int>(x_range_ / grid_size_) + 2 + 2 * k_ex_;
     int N = static_cast<int>(y_range_ / grid_size_) + 2 + 2 * k_ex_;   
 
-    std::cout << x_range_ << std::endl; 
-    std::cout << grid_size_ << std::endl; 
-    std::cout << k_ex_ << std::endl; 
-    std::cout << M << std::endl;
+    double min_limit_x = min_pt_.x - k_ex_ * grid_size_;
+    double min_limit_y = min_pt_.y - k_ex_ * grid_size_;
+
     std::vector<std::vector<Grid_T>> grids(M, std::vector<Grid_T>(N));
 
     for (size_t i = 0; i < cloud->points.size(); ++i) {
@@ -50,7 +54,7 @@ void BspFitting::GetControlPoint(PointCloud cloud) {
                 }
 
                 // one point at the bottom of 10%
-                ctr_ptc[i][j] =  Point((i + 0.5) * grid_size_ + min_pt_.x, (j + 0.5) * grid_size_ + min_pt_.y, grid_points[retain_count-1].z);
+                ctr_ptc[i][j] =  Point((i + 0.5) * grid_size_ + min_limit_x, (j + 0.5) * grid_size_ + min_limit_y, grid_points[retain_count-1].z);
                 ptc_list.push_back(ctr_ptc[i][j]);
                 // mean height of 10% pointcloud at bottom
                 // double height_sum = 0.0;
@@ -59,18 +63,18 @@ void BspFitting::GetControlPoint(PointCloud cloud) {
                 // }
                 // ctr_ptc[i][j] = Point((i + 0.5) * grid_size_ + min_pt_.x, (j + 0.5) * grid_size_ + min_pt_.y, height_sum/retain_count));
             } else {
-                ctr_ptc[i][j] = Point((i + 0.5) * grid_size_ + min_pt_.x, (j + 0.5) * grid_size_ + min_pt_.y, MAX_DOUBLE);
+                ctr_ptc[i][j] = Point((i + 0.5) * grid_size_ + min_limit_x, (j + 0.5) * grid_size_ + min_limit_y, MAX_DOUBLE);
             }
 
         }
     }
-    std::cout << "debug" << std::endl;
+
     // interpolate the empty grid(z-value is maxDoudble) with neareast ground points
     for (int i = 0; i < M; ++i) {
         for (int j = 0; j < N; ++j) {
             if (ctr_ptc[i][j].z == MAX_DOUBLE) {
-                double x_em = min_pt_.x + i * grid_size_ - grid_size_ * 1; // convert to real coordiantes
-                double y_em = min_pt_.y + j * grid_size_ - grid_size_ * 1;
+                double x_em = ctr_ptc[i][j].x; // convert to real coordiantes
+                double y_em = ctr_ptc[i][j].y;
                 ctr_ptc[i][j].z = InterpolatePoint(ptc_list, x_em, y_em);
             }
         }

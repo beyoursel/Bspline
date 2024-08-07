@@ -80,19 +80,13 @@ std::vector<Point> PclPointCloudToVector(pcl::PointCloud<pcl::PointXYZ>::Ptr clo
 
 
 void VisualizePointCloudV2(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
-    const std::vector<Point>& vertices,
     const std::vector<Point>&  control_points)
 {
     pcl::visualization::PCLVisualizer::Ptr viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
     viewer->setBackgroundColor(0, 0, 0);
 
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZ>);
-    pcl::PointCloud<pcl::PointXYZ>::Ptr controlCloud(new pcl::PointCloud<pcl::PointXYZ>);
 
-    for (const auto& vertex : vertices)
-    {
-        cloud->points.push_back(pcl::PointXYZ(vertex.x, vertex.y, vertex.z));
-    }
+    pcl::PointCloud<pcl::PointXYZ>::Ptr controlCloud(new pcl::PointCloud<pcl::PointXYZ>);
 
     for (const auto& point : control_points)
     {
@@ -101,9 +95,6 @@ void VisualizePointCloudV2(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
 
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> cloud_color_handler(downsample_cloud, 255, 255, 255);
     viewer->addPointCloud(downsample_cloud, cloud_color_handler, "downsample_points");
-
-    pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> downsample_color_handler(cloud, 0, 255, 0);
-    viewer->addPointCloud(cloud, downsample_color_handler, "fitted_points");
 
     pcl::visualization::PointCloudColorHandlerCustom<pcl::PointXYZ> control_color_handler(controlCloud, 255, 0, 0);
     viewer->addPointCloud(controlCloud, control_color_handler, "control_points");
@@ -537,44 +528,46 @@ int main(int argc, char** argv) {
     // double longti = std::stod(argv[2]);
     // double lati = std::stod(argv[3]);
     // convert the takeoff point to 
-    // SetHome(HOME_LAT_, HOME_LON_);
+    SetHome(HOME_LAT_, HOME_LON_);
 
 
-    // double x_intr;
-    // double y_intr;
+    double x_intr;
+    double y_intr;
 
     // x_intr = Lon2M(longti);
     // y_intr = Lat2M(lati);
 
-    // std::vector<std::vector<double>> LonandLat = {{118.7806222, 31.8351078},
-    //                                                 {118.7810634, 31.8347478},
-    //                                                 {118.7814473, 31.8344676},
-    //                                                 {118.7814108, 31.8348904},
-    //                                                 {118.7806701, 31.8351548},
-    //                                                 {118.7815429, 31.8352704},
-    //                                                 {118.7811188, 31.8351964},
-    //                                                 {118.7820834, 31.8346503}
-    //                                             };
+    std::vector<std::vector<double>> LonandLat = {{118.7806222, 31.8351078},
+                                                    {118.7810634, 31.8347478},
+                                                    {118.7814473, 31.8344676},
+                                                    {118.7814108, 31.8348904},
+                                                    {118.7806701, 31.8351548},
+                                                    {118.7815429, 31.8352704},
+                                                    {118.7811188, 31.8351964},
+                                                    {118.7820834, 31.8346503}
+                                                };
 
 
-    // for (int i = 0; i < LonandLat.size(); i++) {
+    for (int i = 0; i < LonandLat.size(); i++) {
         
-    //     double longti = LonandLat[i][0];
-    //     double lati = LonandLat[i][1];
+        double longti = LonandLat[i][0];
+        double lati = LonandLat[i][1];
 
-    //     x_intr = Lon2M(longti);
-    //     y_intr = Lat2M(lati);
+        x_intr = Lon2M(longti);
+        y_intr = Lat2M(lati);
 
-    //     if ((x_intr < min_pt.x || x_intr > max_pt.x || y_intr < min_pt.y || y_intr > max_pt.y)) {
-    //         std::cerr << "the data point is out of the range" << std::endl;
-    //         std::exit(EXIT_FAILURE);
-    //     }
-    //     test_point_ = surface.GetFittingPoint(x_intr,  y_intr);
+        std::cout << x_intr << " " << y_intr << std::endl;
 
-    //     std::cout << std::fixed << std::setprecision(8) << "x: " << x_intr << " " << "y: " << y_intr << std::endl;
-    //     std::cout << std::fixed << std::setprecision(8) << "latitude: " << lati << " " << "longitude: " << longti << " " << "height: " << test_point_.z + 21.48 <<  std::endl;
-    //     test_points_set.push_back(Point(x_intr, y_intr, test_point_.z));
-    // }
+        if ((x_intr < min_pt.x || x_intr > max_pt.x || y_intr < min_pt.y || y_intr > max_pt.y)) {
+            std::cerr << "the data point is out of the range" << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
+        test_point_ = surface.GetFittingPoint(x_intr,  y_intr);
+
+        std::cout << std::fixed << std::setprecision(8) << "x: " << x_intr << " " << "y: " << y_intr << std::endl;
+        std::cout << std::fixed << std::setprecision(8) << "latitude: " << lati << " " << "longitude: " << longti << " " << "height: " << test_point_.z + 21.48 <<  std::endl;
+        test_points_set.push_back(Point(x_intr, y_intr, test_point_.z));
+    }
 
 
     // if ((x_intr < min_pt_g.x || x_intr > max_pt_g.x || y_intr < min_pt_g.y || y_intr > max_pt_g.y)) {
@@ -620,23 +613,24 @@ int main(int argc, char** argv) {
     {
         for (const auto& point : row)
         {
-            control_point_cloud->points.push_back(pcl::PointXYZ(point.x, point.y, point.z));
+            // control_point_cloud->points.push_back(pcl::PointXYZ(point.x, point.y, point.z));
+            control_points.push_back(point);
         }
     }
 
-    std::string output_control_file = out_bspline_folder + "/" + "control_point" + ".pcd";  
-    pcl::io::savePCDFileBinary(output_control_file, *control_point_cloud);
+    // std::string output_control_file = out_bspline_folder + "/" + "control_point" + ".pcd";  
+    // pcl::io::savePCDFileBinary(output_control_file, *control_point_cloud);
 
 
-    std::string output_downsample_file = out_bspline_folder + "/" + "downsample" + ".pcd";  
-    pcl::io::savePCDFileBinary(output_downsample_file, *filtered_cloud);
+    // std::string output_downsample_file = out_bspline_folder + "/" + "downsample" + ".pcd";  
+    // pcl::io::savePCDFileBinary(output_downsample_file, *filtered_cloud);
 
 
-    std::string output_tree_top_file = out_bspline_folder + "/" + "tree_top" + ".pcd";  
-    pcl::io::savePCDFileBinary(output_tree_top_file, *tree_top);
+    // std::string output_tree_top_file = out_bspline_folder + "/" + "tree_top" + ".pcd";  
+    // pcl::io::savePCDFileBinary(output_tree_top_file, *tree_top);
 
-    std::string output_ground_file = out_bspline_folder + "/" + "ground" + ".pcd";  
-    pcl::io::savePCDFileBinary(output_ground_file, *ground_filtered);
+    // std::string output_ground_file = out_bspline_folder + "/" + "ground" + ".pcd";  
+    // pcl::io::savePCDFileBinary(output_ground_file, *ground_filtered);
 
     // pcl::PointCloud<pcl::PointXYZ>::Ptr test_cloud(new pcl::PointCloud<pcl::PointXYZ>);
     // for (const auto& point : test_points_set)
@@ -652,7 +646,7 @@ int main(int argc, char** argv) {
     // knot_points = surface.GetKnotPoints();
 
     // // 可视化拟合点和控制点
-    // VisualizePointCloudV2(filtered_cloud, vertices, control_points);
+    VisualizePointCloudV2(filtered_cloud, control_points);
 
     return 0;
 }

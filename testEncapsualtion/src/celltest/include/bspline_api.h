@@ -27,7 +27,7 @@ public:
         x_range_ = max_pt_.x - min_pt_.x;
         y_range_ = max_pt_.y - min_pt_.y;
 
-        k_ex_ = 1; // 在control_points外围增加一圈
+        k_ex_ = 2; // 在control_points外围增加一圈
 
 
         GetControlPoint(ptc); // 根据输入点云获得control_points
@@ -44,9 +44,8 @@ private:
     pcl::PointXYZ min_pt_, max_pt_;
     double grid_size_;
     double x_range_, y_range_;
-    std::vector<std::vector<Point>> ctr_points_;
     int k_, k_ex_;
-
+    std::vector<std::vector<Point>> ctr_points_;
     void GetControlPoint(PointCloud cloud);
     
 };
