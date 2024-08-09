@@ -1,6 +1,10 @@
 #include "bspline_api.h"
 
 
+double BspFitting::Distance(const Point& p1, const Point& p2) {
+    return std::sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+}
+
 
 Point BspFitting::GetBsplinePoint(double x, double y) {
 
@@ -14,7 +18,7 @@ Point BspFitting::GetBsplinePoint(double x, double y) {
 
 void BspFitting::GetControlPoint(PointCloud cloud) {
 
-
+    auto start = std::chrono::high_resolution_clock::now();
     int M = static_cast<int>(x_range_ / grid_size_) + 2 + 2 * k_ex_;
     int N = static_cast<int>(y_range_ / grid_size_) + 2 + 2 * k_ex_;   
 
@@ -33,6 +37,10 @@ void BspFitting::GetControlPoint(PointCloud cloud) {
             grids[grid_x][grid_y].points.push_back({point.x, point.y, point.z});
         }
     }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    double duration = std::chrono::duration_cast<std::chrono::duration<double>>(end - start).count() * 1000;
+    std::cout << "Assign PointCloud to Grid Time: " << duration << " milliseconds" << std::endl;  
 
     std::vector<std::vector<Point>> ctr_ptc(M, std::vector<Point>(N));
 
@@ -69,11 +77,17 @@ void BspFitting::GetControlPoint(PointCloud cloud) {
         }
     }
 
+    std::cout << "valid ctr-points from ground pointcloud: " << ptc_list.size() << std::endl;
+
+    auto end1 = std::chrono::high_resolution_clock::now();
+    double duration1 = std::chrono::duration_cast<std::chrono::duration<double>>(end1 - end).count() * 1000;
+    std::cout << "Generate Ground Points Time: " << duration1 << " milliseconds" << std::endl;  
+
     // version 1
     // interpolate the empty grid(z-value is maxDoudble) with neareast ground points
     // for (int i = 0; i < M; ++i) {
     //     for (int j = 0; j < N; ++j) {
-    //         if (ctr_ptc[i][j].z == MAX_DOUBLE) {
+    //         if (std::isinf(ctr_ptc[i][j].z)) {
     //             double x_em = ctr_ptc[i][j].x; // convert to real coordiantes
     //             double y_em = ctr_ptc[i][j].y;
     //             ctr_ptc[i][j].z = InterpolatePoint(ptc_list, x_em, y_em);
@@ -82,7 +96,16 @@ void BspFitting::GetControlPoint(PointCloud cloud) {
     // }
 
     // version 2 kd-tree
-    InterpolatePointKd(ctr_ptc, ptc_list);
+
+    // InterpolatePointKd(ctr_ptc, ptc_list);
+
+    // version 3 adaptive radius search
+
+    InterpolatePointAdaptRadius(ctr_ptc);
+
+    auto end2 = std::chrono::high_resolution_clock::now();
+    double duration2 = std::chrono::duration_cast<std::chrono::duration<double>>(end2 - end1).count() * 1000;
+    std::cout << "Interpolate Empty Position Time: " << duration2 << " milliseconds" << std::endl;  
 
     ctr_points_ = ctr_ptc;
 }
@@ -116,21 +139,75 @@ double BspFitting::InterpolatePoint(const std::vector<Point>& points, double x, 
 }
 
 
+void BspFitting::InterpolatePointAdaptRadius(std::vector<std::vector<Point>>& temp) {
+   
+    std::vector<std::vector<Point>> ctr_ptc = temp;
+    int M = ctr_ptc.size();
+    int N = ctr_ptc[0].size();
+
+    for (int i = 0; i < M; ++i) {
+        for (int j = 0; j < N; ++j) {
+            if (std::isinf(ctr_ptc[i][j].z)) {
+                std::vector<Point> nearpoint;
+                std::vector<std::pair<double, double>> nearby_h; 
+
+                int searchRadius = 1;
+
+                // 循环扩大搜索半径，直到找到至少3个有效点
+                while (nearpoint.size() < 3 && searchRadius < std::max(M, N)) {
+                    for (int di = -searchRadius; di <= searchRadius; ++di) {
+                        for (int dj = -searchRadius; dj <= searchRadius; ++dj) {
+                            int ni = i + di;
+                            int nj = j + dj;
+
+                            if (ni >= 0 && ni < M && nj >= 0 && nj < N && !std::isinf(ctr_ptc[ni][nj].z)) {
+                                nearpoint.push_back(ctr_ptc[ni][nj]);
+                            }
+                        }
+                    }
+                    // std::cout << "nearby points: " << nearbyPoints.size() << std::endl;
+                    searchRadius = searchRadius + 1; // 增加搜索半径
+                }
+
+                for (auto ptc: nearpoint) {
+                    double dis = Distance(ctr_ptc[i][j], ptc);
+                    nearby_h.emplace_back(dis, ptc.z);
+                }
+                std::sort(nearby_h.begin(), nearby_h.end()); // 按距离平方排序
+
+                double sumZ = 0.0;
+
+                for (int i = 0; i < 3; i++) {
+                    sumZ += nearby_h[i].second;
+                }
+                temp[i][j].z = sumZ / 3.0;
+            }
+        }
+    }
+}
+
+
 void BspFitting::InterpolatePointKd(std::vector<std::vector<Point>>& cn_points, std::vector<Point>& ptc_lists, int k_kd) {
 
     PointCloud cloud_2d_presudo(new pcl::PointCloud<pcl::PointXYZ>);
     for (auto point: ptc_lists) {
         cloud_2d_presudo->points.push_back(pcl::PointXYZ(point.x, point.y, 0.0f));
     }
+
+    auto start_kd = std::chrono::high_resolution_clock::now();
     pcl::KdTreeFLANN<pcl::PointXYZ> kdtree;
     kdtree.setInputCloud(cloud_2d_presudo);
+
+    auto end_kd = std::chrono::high_resolution_clock::now();
+    double duration_kd = std::chrono::duration_cast<std::chrono::duration<double>>(end_kd - start_kd).count() * 1000;
+    std::cout << "Build Kd_tree Time: " << duration_kd << " milliseconds" << std::endl;  
 
     std::vector<int> point_idx_knsearch(k_kd);
     std::vector<float> point_kdn_sq_dis(k_kd);
     for (int i = 0; i < cn_points.size(); ++i) {
         for (int j = 0; j < cn_points[0].size(); ++j) {
             pcl::PointXYZ search_point;
-            if (cn_points[i][j].z == MAX_DOUBLE) {
+            if (std::isinf(cn_points[i][j].z)) {
                 search_point.x = cn_points[i][j].x; // convert to real coordiantes
                 search_point.y = cn_points[i][j].y;
                 search_point.z = 0.0;

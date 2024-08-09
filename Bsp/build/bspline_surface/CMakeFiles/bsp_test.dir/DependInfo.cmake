@@ -5,6 +5,8 @@ set(CMAKE_DEPENDS_LANGUAGES
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
   "/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/src/bspline_surface/src/bsp_test.cpp" "/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bsp_test.cpp.o"
+  "/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/src/bspline_surface/src/bspline.cpp" "/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bspline.cpp.o"
+  "/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/src/bspline_surface/src/bspline_api.cpp" "/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bspline_api.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 

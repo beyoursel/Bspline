@@ -371,7 +371,7 @@ gtest/googlemock/CMakeFiles/gmock_main.dir/all: gtest/googlemock/CMakeFiles/gmoc
 gtest/googlemock/CMakeFiles/gmock_main.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock_main.dir/build.make gtest/googlemock/CMakeFiles/gmock_main.dir/depend
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock_main.dir/build.make gtest/googlemock/CMakeFiles/gmock_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles --progress-num=5,6 "Built target gmock_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles --progress-num=7,8 "Built target gmock_main"
 .PHONY : gtest/googlemock/CMakeFiles/gmock_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -398,7 +398,7 @@ gtest/googlemock/CMakeFiles/gmock_main.dir/clean:
 gtest/googlemock/CMakeFiles/gmock.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock.dir/build.make gtest/googlemock/CMakeFiles/gmock.dir/depend
 	$(MAKE) -f gtest/googlemock/CMakeFiles/gmock.dir/build.make gtest/googlemock/CMakeFiles/gmock.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles --progress-num=3,4 "Built target gmock"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles --progress-num=5,6 "Built target gmock"
 .PHONY : gtest/googlemock/CMakeFiles/gmock.dir/all
 
 # Build rule for subdir invocation for target.
@@ -425,7 +425,7 @@ gtest/googlemock/CMakeFiles/gmock.dir/clean:
 gtest/googletest/CMakeFiles/gtest_main.dir/all: gtest/googletest/CMakeFiles/gtest.dir/all
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest_main.dir/build.make gtest/googletest/CMakeFiles/gtest_main.dir/depend
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest_main.dir/build.make gtest/googletest/CMakeFiles/gtest_main.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles --progress-num=9,10 "Built target gtest_main"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles --progress-num=11,12 "Built target gtest_main"
 .PHONY : gtest/googletest/CMakeFiles/gtest_main.dir/all
 
 # Build rule for subdir invocation for target.
@@ -452,7 +452,7 @@ gtest/googletest/CMakeFiles/gtest_main.dir/clean:
 gtest/googletest/CMakeFiles/gtest.dir/all:
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/depend
 	$(MAKE) -f gtest/googletest/CMakeFiles/gtest.dir/build.make gtest/googletest/CMakeFiles/gtest.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles --progress-num=7,8 "Built target gtest"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles --progress-num=9,10 "Built target gtest"
 .PHONY : gtest/googletest/CMakeFiles/gtest.dir/all
 
 # Build rule for subdir invocation for target.
@@ -1748,12 +1748,12 @@ bspline_surface/CMakeFiles/geometry_msgs_generate_messages_cpp.dir/clean:
 bspline_surface/CMakeFiles/bsp_test.dir/all:
 	$(MAKE) -f bspline_surface/CMakeFiles/bsp_test.dir/build.make bspline_surface/CMakeFiles/bsp_test.dir/depend
 	$(MAKE) -f bspline_surface/CMakeFiles/bsp_test.dir/build.make bspline_surface/CMakeFiles/bsp_test.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles --progress-num=1,2 "Built target bsp_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles --progress-num=1,2,3,4 "Built target bsp_test"
 .PHONY : bspline_surface/CMakeFiles/bsp_test.dir/all
 
 # Build rule for subdir invocation for target.
 bspline_surface/CMakeFiles/bsp_test.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles 2
+	$(CMAKE_COMMAND) -E cmake_progress_start /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles 4
 	$(MAKE) -f CMakeFiles/Makefile2 bspline_surface/CMakeFiles/bsp_test.dir/all
 	$(CMAKE_COMMAND) -E cmake_progress_start /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles 0
 .PHONY : bspline_surface/CMakeFiles/bsp_test.dir/rule

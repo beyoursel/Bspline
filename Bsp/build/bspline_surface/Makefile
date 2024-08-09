@@ -1379,6 +1379,60 @@ src/bsp_test.cpp.s:
 	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build && $(MAKE) -f bspline_surface/CMakeFiles/bsp_test.dir/build.make bspline_surface/CMakeFiles/bsp_test.dir/src/bsp_test.cpp.s
 .PHONY : src/bsp_test.cpp.s
 
+src/bspline.o: src/bspline.cpp.o
+
+.PHONY : src/bspline.o
+
+# target to build an object file
+src/bspline.cpp.o:
+	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build && $(MAKE) -f bspline_surface/CMakeFiles/bsp_test.dir/build.make bspline_surface/CMakeFiles/bsp_test.dir/src/bspline.cpp.o
+.PHONY : src/bspline.cpp.o
+
+src/bspline.i: src/bspline.cpp.i
+
+.PHONY : src/bspline.i
+
+# target to preprocess a source file
+src/bspline.cpp.i:
+	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build && $(MAKE) -f bspline_surface/CMakeFiles/bsp_test.dir/build.make bspline_surface/CMakeFiles/bsp_test.dir/src/bspline.cpp.i
+.PHONY : src/bspline.cpp.i
+
+src/bspline.s: src/bspline.cpp.s
+
+.PHONY : src/bspline.s
+
+# target to generate assembly for a file
+src/bspline.cpp.s:
+	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build && $(MAKE) -f bspline_surface/CMakeFiles/bsp_test.dir/build.make bspline_surface/CMakeFiles/bsp_test.dir/src/bspline.cpp.s
+.PHONY : src/bspline.cpp.s
+
+src/bspline_api.o: src/bspline_api.cpp.o
+
+.PHONY : src/bspline_api.o
+
+# target to build an object file
+src/bspline_api.cpp.o:
+	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build && $(MAKE) -f bspline_surface/CMakeFiles/bsp_test.dir/build.make bspline_surface/CMakeFiles/bsp_test.dir/src/bspline_api.cpp.o
+.PHONY : src/bspline_api.cpp.o
+
+src/bspline_api.i: src/bspline_api.cpp.i
+
+.PHONY : src/bspline_api.i
+
+# target to preprocess a source file
+src/bspline_api.cpp.i:
+	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build && $(MAKE) -f bspline_surface/CMakeFiles/bsp_test.dir/build.make bspline_surface/CMakeFiles/bsp_test.dir/src/bspline_api.cpp.i
+.PHONY : src/bspline_api.cpp.i
+
+src/bspline_api.s: src/bspline_api.cpp.s
+
+.PHONY : src/bspline_api.s
+
+# target to generate assembly for a file
+src/bspline_api.cpp.s:
+	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build && $(MAKE) -f bspline_surface/CMakeFiles/bsp_test.dir/build.make bspline_surface/CMakeFiles/bsp_test.dir/src/bspline_api.cpp.s
+.PHONY : src/bspline_api.cpp.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -1474,6 +1528,12 @@ help:
 	@echo "... src/bsp_test.o"
 	@echo "... src/bsp_test.i"
 	@echo "... src/bsp_test.s"
+	@echo "... src/bspline.o"
+	@echo "... src/bspline.i"
+	@echo "... src/bspline.s"
+	@echo "... src/bspline_api.o"
+	@echo "... src/bspline_api.i"
+	@echo "... src/bspline_api.s"
 .PHONY : help
 
 

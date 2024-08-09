@@ -70,14 +70,44 @@ bspline_surface/CMakeFiles/bsp_test.dir/src/bsp_test.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/bsp_test.dir/src/bsp_test.cpp.s"
 	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/bspline_surface && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/src/bspline_surface/src/bsp_test.cpp -o CMakeFiles/bsp_test.dir/src/bsp_test.cpp.s
 
+bspline_surface/CMakeFiles/bsp_test.dir/src/bspline_api.cpp.o: bspline_surface/CMakeFiles/bsp_test.dir/flags.make
+bspline_surface/CMakeFiles/bsp_test.dir/src/bspline_api.cpp.o: /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/src/bspline_surface/src/bspline_api.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object bspline_surface/CMakeFiles/bsp_test.dir/src/bspline_api.cpp.o"
+	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/bspline_surface && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/bsp_test.dir/src/bspline_api.cpp.o -c /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/src/bspline_surface/src/bspline_api.cpp
+
+bspline_surface/CMakeFiles/bsp_test.dir/src/bspline_api.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/bsp_test.dir/src/bspline_api.cpp.i"
+	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/bspline_surface && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/src/bspline_surface/src/bspline_api.cpp > CMakeFiles/bsp_test.dir/src/bspline_api.cpp.i
+
+bspline_surface/CMakeFiles/bsp_test.dir/src/bspline_api.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/bsp_test.dir/src/bspline_api.cpp.s"
+	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/bspline_surface && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/src/bspline_surface/src/bspline_api.cpp -o CMakeFiles/bsp_test.dir/src/bspline_api.cpp.s
+
+bspline_surface/CMakeFiles/bsp_test.dir/src/bspline.cpp.o: bspline_surface/CMakeFiles/bsp_test.dir/flags.make
+bspline_surface/CMakeFiles/bsp_test.dir/src/bspline.cpp.o: /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/src/bspline_surface/src/bspline.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Building CXX object bspline_surface/CMakeFiles/bsp_test.dir/src/bspline.cpp.o"
+	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/bspline_surface && /usr/bin/c++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/bsp_test.dir/src/bspline.cpp.o -c /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/src/bspline_surface/src/bspline.cpp
+
+bspline_surface/CMakeFiles/bsp_test.dir/src/bspline.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/bsp_test.dir/src/bspline.cpp.i"
+	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/bspline_surface && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/src/bspline_surface/src/bspline.cpp > CMakeFiles/bsp_test.dir/src/bspline.cpp.i
+
+bspline_surface/CMakeFiles/bsp_test.dir/src/bspline.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/bsp_test.dir/src/bspline.cpp.s"
+	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/bspline_surface && /usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/src/bspline_surface/src/bspline.cpp -o CMakeFiles/bsp_test.dir/src/bspline.cpp.s
+
 # Object files for target bsp_test
 bsp_test_OBJECTS = \
-"CMakeFiles/bsp_test.dir/src/bsp_test.cpp.o"
+"CMakeFiles/bsp_test.dir/src/bsp_test.cpp.o" \
+"CMakeFiles/bsp_test.dir/src/bspline_api.cpp.o" \
+"CMakeFiles/bsp_test.dir/src/bspline.cpp.o"
 
 # External object files for target bsp_test
 bsp_test_EXTERNAL_OBJECTS =
 
 /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/devel/lib/bspline_surface/bsp_test: bspline_surface/CMakeFiles/bsp_test.dir/src/bsp_test.cpp.o
+/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/devel/lib/bspline_surface/bsp_test: bspline_surface/CMakeFiles/bsp_test.dir/src/bspline_api.cpp.o
+/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/devel/lib/bspline_surface/bsp_test: bspline_surface/CMakeFiles/bsp_test.dir/src/bspline.cpp.o
 /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/devel/lib/bspline_surface/bsp_test: bspline_surface/CMakeFiles/bsp_test.dir/build.make
 /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/devel/lib/bspline_surface/bsp_test: /opt/ros/noetic/lib/libpcl_ros_filter.so
 /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/devel/lib/bspline_surface/bsp_test: /opt/ros/noetic/lib/libpcl_ros_tf.so
@@ -386,7 +416,7 @@ bsp_test_EXTERNAL_OBJECTS =
 /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/devel/lib/bspline_surface/bsp_test: /usr/lib/x86_64-linux-gnu/libXext.so
 /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/devel/lib/bspline_surface/bsp_test: /usr/lib/x86_64-linux-gnu/libXt.so
 /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/devel/lib/bspline_surface/bsp_test: bspline_surface/CMakeFiles/bsp_test.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Linking CXX executable /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/devel/lib/bspline_surface/bsp_test"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_4) "Linking CXX executable /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/devel/lib/bspline_surface/bsp_test"
 	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/build/bspline_surface && $(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/bsp_test.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.

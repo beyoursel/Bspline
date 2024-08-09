@@ -8,9 +8,11 @@
 #include <pcl/kdtree/kdtree_flann.h>
 #include <vector>
 #include <queue>
+#include <chrono>
+#include <algorithm>
 
 
-constexpr double MAX_DOUBLE = std::numeric_limits<double>::max();
+constexpr double MAX_DOUBLE = std::numeric_limits<double>::infinity();
 typedef pcl::PointCloud<pcl::PointXYZ>::Ptr PointCloud;
 
 
@@ -38,7 +40,9 @@ public:
     Point GetBsplinePoint(double x, double y);
     double InterpolatePoint(const std::vector<Point>& points, double x, double y, int k = 3);
     void InterpolatePointKd(std::vector<std::vector<Point>>& cn_points, std::vector<Point>& ptc_lists, int k_kd = 3);
-
+    void InterpolatePointAdaptRadius(std::vector<std::vector<Point>>& ctr_ptc);
+    double Distance(const Point& p1, const Point& p2);
+    std::vector<std::vector<Point>> ctr_points_;
 
 
 private:
@@ -47,7 +51,7 @@ private:
     double grid_size_;
     double x_range_, y_range_;
     int k_, k_ex_;
-    std::vector<std::vector<Point>> ctr_points_;
+
     void GetControlPoint(PointCloud cloud);
     
 };
