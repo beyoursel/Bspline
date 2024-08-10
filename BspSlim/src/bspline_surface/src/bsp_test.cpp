@@ -149,8 +149,8 @@ int main(int argc, char** argv) {
 
         std::cout << std::fixed << std::setprecision(8) << "longitude: " << longti << " " << "latitude: " << lati << " " << "height: " << h <<  std::endl;
     }
-
-
+    
+    // test  
     // std::vector<std::vector<Point>> ctr_points_set = bsp_fit.cn_point_pub_; 
 
     // // 提取控制点
