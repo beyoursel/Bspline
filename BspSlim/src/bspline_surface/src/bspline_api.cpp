@@ -91,19 +91,13 @@ void BspFitting::GetControlPoint(PointCloud cloud) {
     std::cout << "valid ctr-points from ground pointcloud: " << ptc_list.size() << std::endl;
 
     auto end1 = std::chrono::high_resolution_clock::now();
-    double duration1 = std::chrono::duration_cast<std::chrono::duration<double>>(end1 - end).count() * 1000;
-    std::cout << "Generate Ground Points Time: " << duration1 << " milliseconds" << std::endl;  
+    // double duration1 = std::chrono::duration_cast<std::chrono::duration<double>>(end1 - end).count() * 1000;
+    // std::cout << "Generate Ground Points Time: " << duration1 << " milliseconds" << std::endl;  
 
-    // version 1 kd-tree
-
-    // InterpolatePointKd(ctr_ptc, ptc_list);
-
-    // version 2 adaptive radius search
-
-    InterpolatePointAdaptRadius(ctr_ptc);
-
-    // version 3
+    
     // InterpolatePointAdaptRadiusQueue(ctr_ptc);
+    // InterpolatePointAdaptRadius(ctr_ptc);
+    InterpolatePointKd(ctr_ptc, ptc_list);
 
     auto end2 = std::chrono::high_resolution_clock::now();
     double duration2 = std::chrono::duration_cast<std::chrono::duration<double>>(end2 - end1).count() * 1000;
@@ -142,27 +136,39 @@ void BspFitting::InterpolatePointAdaptRadiusQueue(std::vector<std::vector<Point>
                             }
                         }
                     }
-                    searchRadius++;
+                    if (!pq.empty()) {
+                        searchRadius++;
+                    } else {
+                        searchRadius += 2;
+                    }
+
                 }
 
                 
                 std::vector<double> topKNearestZ;
-                while (!pq.empty() && topKNearestZ.size() < k_nei) {
+                while (!pq.empty()) {
                     topKNearestZ.push_back(pq.top().second);
                     pq.pop();
                 }
 
-                
                 double sumz = 0.0;
                 for (const double z : topKNearestZ) {
                     sumz += z;
                 }
+
+                // double sumz = 0.0;
+                // while (!pq.empty()) {
+                //     double temp1 = pq.top().second;
+                //     pq.pop();
+                //     sumz += temp1;
+
+                // }
+
                 temp[i][j].z = sumz / k_nei;
             }
         }
     }
 }
-
 
 void BspFitting::InterpolatePointAdaptRadius(std::vector<std::vector<Point>>& temp, int k_nei) {
    
@@ -190,7 +196,11 @@ void BspFitting::InterpolatePointAdaptRadius(std::vector<std::vector<Point>>& te
                             }
                         }
                     }
-                    searchRadius = searchRadius + 1; 
+                    if (!nearpoint.empty()) {
+                        searchRadius++;
+                    } else {
+                        searchRadius += 2;
+                    }
                 }
 
                 for (auto ptc: nearpoint) {
@@ -209,7 +219,6 @@ void BspFitting::InterpolatePointAdaptRadius(std::vector<std::vector<Point>>& te
         }
     }
 }
-
 
 void BspFitting::InterpolatePointKd(std::vector<std::vector<Point>>& cn_points, std::vector<Point>& ptc_lists, int k_kd) {
 
