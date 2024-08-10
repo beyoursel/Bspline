@@ -152,6 +152,7 @@ int main(int argc, char** argv) {
     
     // test
     // test again test
+    // add a commoment
     // std::vector<std::vector<Point>> ctr_points_set = bsp_fit.cn_point_pub_; 
 
     // // 提取控制点
