@@ -10,10 +10,18 @@
 #include <queue>
 #include <chrono>
 #include <algorithm>
+#include <cmath>
+
+
+#define M_PI 3.14159265358979323846
+#define HOME_LAT_ 31.8351078
+#define HOME_LON_ 118.7806222
+#define HOME_LATITUDE 21.48
 
 
 constexpr double MAX_DOUBLE = std::numeric_limits<double>::infinity();
 typedef pcl::PointCloud<pcl::PointXYZ>::Ptr PointCloud;
+
 
 
 struct Grid_T {
@@ -42,6 +50,14 @@ public:
  */
     Point GetBsplinePoint(double x, double y);
 
+/**
+ *  \brief 输入经纬度，查询对应位置的z
+ *  \param lon
+ *  \param lat
+ *  \return z
+ */
+    double GetBsplinePointLonLat(double lon, double lat);
+
 
 private:
     BspSurface bsp_; // BspSurface实例
@@ -49,6 +65,8 @@ private:
     double grid_size_; // 栅格尺寸
     double x_range_, y_range_; // 输入点云范围
     int k_, k_ex_; // 阶数，控制点扩展维度
+    double home_x_;
+    double home_y_;
 
 /**
  *  \brief 计算XY平面上两点距离
@@ -63,27 +81,33 @@ private:
     void GetControlPoint(PointCloud cloud);
 
 /**
- *  \brief 使用优先级队列维护最近邻解
- *  \param temp 控制点
- *  \param k_nei 最近邻个数
- */
-    void InterpolatePointAdaptRadiusQueue(std::vector<std::vector<Point>>& ctr_ptc, int k_nei = 3);     
-
-/**
- *  \brief 自适应半径搜索最近邻点
- *  \param temp 控制点
- *  \param k_nei 最近邻个数
- */
-    void InterpolatePointAdaptRadius(std::vector<std::vector<Point>>& ctr_ptc, int k_nei = 3);
-
-
-/**
  *  \brief Kd-tree版本控制点插值
  *  \param ctr_ptc 控制点
  *  \param ptc_lists 由点云得到的控制点
  *  \param k_kd 最近邻点个数
  */
     void InterpolatePointKd(std::vector<std::vector<Point>>& ctr_ptc, std::vector<Point>& ptc_lists, int k_kd = 3);
+
+/**
+ *  \brief 将纬度转化为ENU下局部坐标y
+ *  \param latitude 纬度
+ *  \return 返回y
+ */
+    double Lat2M(double latitude);
+
+/**
+ *  \brief 将经度转化为ENU下局部坐标x
+ *  \param longtitude 经度
+ *  \return 返回x
+ */  
+    double Lon2M(double longitude);
+
+/**
+ *  \brief 设置home点
+ *  \param lati_home home点的纬度
+ *  \param lon_home home点的经度
+ */
+    void SetHome(double lati_home, double lon_home);
 
 };
 

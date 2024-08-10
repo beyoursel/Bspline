@@ -30,9 +30,9 @@ include_directories(
   ${PCL_INCLUDE_DIRS}
 )
 
-## Declare a C++ library
-# add_library(bsplinefitkd SHARED
-#   src/bspline.cpp src/bspline_api.cpp
+# Declare a C++ library
+# add_library(bsplinefit SHARED
+#   src/bspline.cpp
 # )
 
 link_directories(${CMAKE_SOURCE_DIR}/${PROJECT_NAME}/lib)
@@ -45,8 +45,6 @@ add_executable(bsp_test src/bsp_test.cpp src/bspline_api.cpp src/bspline.cpp)
 
 
 target_link_libraries(bsp_test
-  # bsplinefit
-  # bsplinefitkd
   ${catkin_LIBRARIES}
   ${PCL_LIBRARIES}  
 )

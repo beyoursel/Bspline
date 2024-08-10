@@ -11,56 +11,11 @@
 #include <chrono>
 #include <boost/filesystem.hpp>
 #include <omp.h>
-#include <bspline.h>
 #include <queue>
 #include <limits>
 #include <cmath>
 #include <iomanip>
 #include "bspline_api.h"
-
-
-#define M_PI 3.14159265358979323846
-#define HOME_LAT_ 31.8351078
-#define HOME_LON_ 118.7806222
-
-float home_x_;
-float home_y_;
-
-using namespace std;
-
-
-void SetHome(double latitude, double longitude) {
-
-  home_x_ = longitude / (360.0 / (40030173.0 * cos(latitude * M_PI / 180.0)));
-  home_y_ = latitude / 0.00000899;
-}
-
-
-double M2Lat(double d) {
-  // 1米对应的纬度变化约为1/111111.0度
-  return HOME_LAT_ + d * 0.00000899;    
-}
-
-
-double M2Lon(double d)
-{
-  // 根据当前纬度计算1米对应的经度变化
-  double latitudeInRadians = HOME_LAT_ * M_PI / 180.0;
-  double metersPerDegreeLongitude = 111320.0 * cos(latitudeInRadians);
-  return HOME_LON_ + d / metersPerDegreeLongitude;
-}
-
-
-double Lat2M(double latitude)
-{
-  return latitude / 0.00000899 - home_y_;
-}
-
-double Lon2M(double longitude)
-{
-  return longitude / (360.0 / (40030173.0 * cos(HOME_LAT_ * M_PI / 180.0))) - home_x_;
-}
-
 
 
 void VisualizePointCloudV2(pcl::PointCloud<pcl::PointXYZ>::Ptr downsample_cloud,
@@ -162,7 +117,7 @@ int main(int argc, char** argv) {
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    BspFitting bsp_fit(filtered_ground, 5.0, 3);
+    BspFitting bsp_fit(filtered_ground, 10.0, 3);
 
     Point ptc = bsp_fit.GetBsplinePoint(0, 0); // test
 
@@ -174,38 +129,26 @@ int main(int argc, char** argv) {
     std::cout << "y: " << ptc.y << std::endl;
 
     // -----------------test--------------------
-    // Point test_point_;
 
-    // SetHome(HOME_LAT_, HOME_LON_);
+    std::vector<std::vector<double>> LonandLat = {{118.7806222, 31.8351078},
+                                                    {118.7810634, 31.8347478},
+                                                    {118.7814473, 31.8344676},
+                                                    {118.7814108, 31.8348904},
+                                                    {118.7806701, 31.8351548},
+                                                    {118.7815429, 31.8352704},
+                                                    {118.7811188, 31.8351964},
+                                                    {118.7820834, 31.8346503}
+                                                };
 
-
-    // double x_intr;
-    // double y_intr;
-
-
-    // std::vector<std::vector<double>> LonandLat = {{118.7806222, 31.8351078},
-    //                                                 {118.7810634, 31.8347478},
-    //                                                 {118.7814473, 31.8344676},
-    //                                                 {118.7814108, 31.8348904},
-    //                                                 {118.7806701, 31.8351548},
-    //                                                 {118.7815429, 31.8352704},
-    //                                                 {118.7811188, 31.8351964},
-    //                                                 {118.7820834, 31.8346503}
-    //                                             };
-
-    // for (int i = 0; i < LonandLat.size(); i++) {
+    for (int i = 0; i < LonandLat.size(); i++) {
         
-    //     double longti = LonandLat[i][0];
-    //     double lati = LonandLat[i][1];
+        double longti = LonandLat[i][0];
+        double lati = LonandLat[i][1];
 
-    //     x_intr = Lon2M(longti);
-    //     y_intr = Lat2M(lati);
+        double h = bsp_fit.GetBsplinePointLonLat(longti, lati);
 
-    //     test_point_ = bsp_fit.GetBsplinePoint(x_intr,  y_intr);
-
-    //     std::cout << std::fixed << std::setprecision(8) << "x: " << x_intr << " " << "y: " << y_intr << std::endl;
-    //     std::cout << std::fixed << std::setprecision(8) << "latitude: " << lati << " " << "longitude: " << longti << " " << "height: " << test_point_.z + 21.48 <<  std::endl;
-    // }
+        std::cout << std::fixed << std::setprecision(8) << "longitude: " << longti << " " << "latitude: " << lati << " " << "height: " << h <<  std::endl;
+    }
 
 
     // std::vector<std::vector<Point>> ctr_points_set = bsp_fit.cn_point_pub_; 

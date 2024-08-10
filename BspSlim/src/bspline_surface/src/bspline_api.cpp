@@ -1,6 +1,25 @@
 #include "bspline_api.h"
 
 
+double BspFitting::Lat2M(double latitude)
+{
+  return latitude / 0.00000899 - home_y_;
+}
+
+
+double BspFitting::Lon2M(double longitude)
+{
+  return longitude / (360.0 / (40030173.0 * cos(HOME_LAT_ * M_PI / 180.0))) - home_x_;
+}
+
+
+void BspFitting::SetHome(double latitude, double longitude) {
+
+  home_x_ = longitude / (360.0 / (40030173.0 * cos(latitude * M_PI / 180.0)));
+  home_y_ = latitude / 0.00000899;
+}
+
+
 double BspFitting::DistanceXY(const Point& p1, const Point& p2) {
     return std::sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
 }
@@ -18,7 +37,7 @@ BspFitting::BspFitting(PointCloud ptc, double grid_size, int k)
 
     GetControlPoint(ptc);
     bsp_ = BspSurface(ctr_points_, k_);
-    // cn_point_pub_ = ctr_points_;
+    cn_point_pub_ = ctr_points_;
 }
 
 
@@ -30,6 +49,18 @@ Point BspFitting::GetBsplinePoint(double x, double y) {
         }
         return bsp_.GetFittingPoint(x, y);
     }
+
+
+double BspFitting::GetBsplinePointLonLat(double lon, double lat) {
+
+    SetHome(HOME_LAT_, HOME_LON_); 
+    double x_intr = Lon2M(lon);
+    double y_intr = Lat2M(lat);
+
+    Point query_p = GetBsplinePoint(x_intr, y_intr);
+
+    return query_p.z + HOME_LATITUDE;
+}
 
 
 void BspFitting::GetControlPoint(PointCloud cloud) {
@@ -53,10 +84,6 @@ void BspFitting::GetControlPoint(PointCloud cloud) {
             grids[grid_x][grid_y].points.push_back({point.x, point.y, point.z});
         }
     }
-
-    auto end = std::chrono::high_resolution_clock::now();
-    double duration = std::chrono::duration_cast<std::chrono::duration<double>>(end - start).count() * 1000;
-    std::cout << "Assign PointCloud to Grid Time: " << duration << " milliseconds" << std::endl;  
 
     std::vector<std::vector<Point>> ctr_ptc(M, std::vector<Point>(N));
 
@@ -88,137 +115,12 @@ void BspFitting::GetControlPoint(PointCloud cloud) {
         }
     }
 
-    std::cout << "valid ctr-points from ground pointcloud: " << ptc_list.size() << std::endl;
 
-    auto end1 = std::chrono::high_resolution_clock::now();
-    // double duration1 = std::chrono::duration_cast<std::chrono::duration<double>>(end1 - end).count() * 1000;
-    // std::cout << "Generate Ground Points Time: " << duration1 << " milliseconds" << std::endl;  
-
-    
-    // InterpolatePointAdaptRadiusQueue(ctr_ptc);
-    // InterpolatePointAdaptRadius(ctr_ptc);
     InterpolatePointKd(ctr_ptc, ptc_list);
-
-    auto end2 = std::chrono::high_resolution_clock::now();
-    double duration2 = std::chrono::duration_cast<std::chrono::duration<double>>(end2 - end1).count() * 1000;
-    std::cout << "Interpolate Empty Position Time: " << duration2 << " milliseconds" << std::endl;  
 
     ctr_points_ = ctr_ptc;
 }
 
-
-void BspFitting::InterpolatePointAdaptRadiusQueue(std::vector<std::vector<Point>>& temp, int k_nei) {
-
-    std::vector<std::vector<Point>> ctr_ptc = temp;
-    int M = ctr_ptc.size();
-    int N = ctr_ptc[0].size();
-
-    for (int i = 0; i < M; ++i) {
-        for (int j = 0; j < N; ++j) {
-            if (std::isinf(ctr_ptc[i][j].z)) {
-                std::priority_queue<std::pair<double, double>> pq;
-                int searchRadius = 1;
-
-                
-                while (pq.size() < 3 && searchRadius < std::max(M, N)) {
-                    for (int di = -searchRadius; di <= searchRadius; ++di) {
-                        for (int dj = -searchRadius; dj <= searchRadius; ++dj) {
-                            int ni = i + di;
-                            int nj = j + dj;
-
-                            if (ni >= 0 && ni < M && nj >= 0 && nj < N && !std::isinf(ctr_ptc[ni][nj].z)) {
-                                double distSq = DistanceXY(ctr_ptc[i][j], ctr_ptc[ni][nj]);
-                                pq.emplace(distSq, ctr_ptc[ni][nj].z);
-
-                                if (pq.size() > k_nei) { 
-                                    pq.pop();
-                                } 
-                            }
-                        }
-                    }
-                    if (!pq.empty()) {
-                        searchRadius++;
-                    } else {
-                        searchRadius += 2;
-                    }
-
-                }
-
-                
-                std::vector<double> topKNearestZ;
-                while (!pq.empty()) {
-                    topKNearestZ.push_back(pq.top().second);
-                    pq.pop();
-                }
-
-                double sumz = 0.0;
-                for (const double z : topKNearestZ) {
-                    sumz += z;
-                }
-
-                // double sumz = 0.0;
-                // while (!pq.empty()) {
-                //     double temp1 = pq.top().second;
-                //     pq.pop();
-                //     sumz += temp1;
-
-                // }
-
-                temp[i][j].z = sumz / k_nei;
-            }
-        }
-    }
-}
-
-void BspFitting::InterpolatePointAdaptRadius(std::vector<std::vector<Point>>& temp, int k_nei) {
-   
-    std::vector<std::vector<Point>> ctr_ptc = temp;
-    int M = ctr_ptc.size();
-    int N = ctr_ptc[0].size();
-
-    for (int i = 0; i < M; ++i) {
-        for (int j = 0; j < N; ++j) {
-            if (std::isinf(ctr_ptc[i][j].z)) {
-                std::vector<Point> nearpoint;
-                std::vector<std::pair<double, double>> nearby_h; 
-
-                int searchRadius = 1; 
-
-                // adaptive expand search radius
-                while (nearpoint.size() < 3 && searchRadius < std::max(M, N)) {
-                    for (int di = -searchRadius; di <= searchRadius; ++di) {
-                        for (int dj = -searchRadius; dj <= searchRadius; ++dj) {
-                            int ni = i + di;
-                            int nj = j + dj;
-
-                            if (ni >= 0 && ni < M && nj >= 0 && nj < N && !std::isinf(ctr_ptc[ni][nj].z)) {
-                                nearpoint.push_back(ctr_ptc[ni][nj]);
-                            }
-                        }
-                    }
-                    if (!nearpoint.empty()) {
-                        searchRadius++;
-                    } else {
-                        searchRadius += 2;
-                    }
-                }
-
-                for (auto ptc: nearpoint) {
-                    double dis = DistanceXY(ctr_ptc[i][j], ptc);
-                    nearby_h.emplace_back(dis, ptc.z);
-                }
-                std::sort(nearby_h.begin(), nearby_h.end());
-
-                double sumz = 0.0;
-
-                for (int i = 0; i < k_nei; i++) {
-                    sumz += nearby_h[i].second;
-                }
-                temp[i][j].z = sumz / k_nei;
-            }
-        }
-    }
-}
 
 void BspFitting::InterpolatePointKd(std::vector<std::vector<Point>>& cn_points, std::vector<Point>& ptc_lists, int k_kd) {
 
@@ -227,13 +129,8 @@ void BspFitting::InterpolatePointKd(std::vector<std::vector<Point>>& cn_points, 
         cloud_2d_presudo->points.push_back(pcl::PointXYZ(point.x, point.y, 0.0f));
     }
 
-    auto start_kd = std::chrono::high_resolution_clock::now();
     pcl::KdTreeFLANN<pcl::PointXYZ> kdtree;
     kdtree.setInputCloud(cloud_2d_presudo);
-
-    auto end_kd = std::chrono::high_resolution_clock::now();
-    double duration_kd = std::chrono::duration_cast<std::chrono::duration<double>>(end_kd - start_kd).count() * 1000;
-    std::cout << "Build Kd_tree Time: " << duration_kd << " milliseconds" << std::endl;  
 
     std::vector<int> point_idx_knsearch(k_kd);
     std::vector<float> point_kdn_sq_dis(k_kd);
@@ -241,7 +138,7 @@ void BspFitting::InterpolatePointKd(std::vector<std::vector<Point>>& cn_points, 
         for (int j = 0; j < cn_points[0].size(); ++j) {
             pcl::PointXYZ search_point;
             if (std::isinf(cn_points[i][j].z)) {
-                search_point.x = cn_points[i][j].x; // convert to real coordiantes
+                search_point.x = cn_points[i][j].x;
                 search_point.y = cn_points[i][j].y;
                 search_point.z = 0.0;
 

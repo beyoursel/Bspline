@@ -1,0 +1,2 @@
+bspline_surface
+-DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 -DCATKIN_DEVEL_PREFIX=/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/devel -DCMAKE_INSTALL_PREFIX=/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/install -G Unix Makefiles
