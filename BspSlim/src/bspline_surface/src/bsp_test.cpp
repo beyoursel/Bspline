@@ -208,21 +208,21 @@ int main(int argc, char** argv) {
     // }
 
 
-    std::vector<std::vector<Point>> ctr_points_set = bsp_fit.ctr_points_; // 需要修改ctr_points_的权限,目前为private
+    // std::vector<std::vector<Point>> ctr_points_set = bsp_fit.cn_point_pub_; 
 
-    // 提取控制点
-    std::vector<Point> control_points;
-    for (const auto& row : ctr_points_set)
-    {
-        for (const auto& point : row)
-        {
-            control_points.push_back(point);
-        }
-    }
+    // // 提取控制点
+    // std::vector<Point> control_points;
+    // for (const auto& row : ctr_points_set)
+    // {
+    //     for (const auto& point : row)
+    //     {
+    //         control_points.push_back(point);
+    //     }
+    // }
 
 
-    // 可视化拟合点和控制点
-    VisualizePointCloudV2(filtered_ground, control_points);
+    // // 可视化拟合点和控制点
+    // VisualizePointCloudV2(filtered_ground, control_points);
 
     return 0;
 }

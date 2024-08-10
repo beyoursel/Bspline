@@ -20,15 +20,12 @@ struct Grid_T {
     std::vector<Point> points;
 };
 
-struct Compare {
-    bool operator()(const std::pair<double, double>& a, const std::pair<double, double>& b) {
-        return a.first < b.first; 
-    }
-};
 
 class BspFitting
 {
 public:
+    std::vector<std::vector<Point>> cn_point_pub_; 
+
 /**
  *  \brief Construct a new BspFitting object
  *  \param PointCloud 输入点云
@@ -45,27 +42,7 @@ public:
  */
     Point GetBsplinePoint(double x, double y);
 
-/**
- *  \brief Kd-tree版本控制点插值
- *  \param cn_points 控制点
- *  \param ptc_lists 由点云得到的控制点
- *  \param k_kd 最近邻点个数
- */
-    void InterpolatePointKd(std::vector<std::vector<Point>>& cn_points, std::vector<Point>& ptc_lists, int k_kd = 3);
 
-/**
- *  \brief 自适应半径区域搜索版控制点插值
- *  \param ctr_ptc 控制点
- */
-    void InterpolatePointAdaptRadius(std::vector<std::vector<Point>>& ctr_ptc, int k_nei = 3);
-
-/**
- *  \brief 计算XY平面上两点距离
- */
-    double DistanceXY(const Point& p1, const Point& p2);
-    std::vector<std::vector<Point>> ctr_points_;
-
-    void InterpolatePointAdaptRadiusQueue(std::vector<std::vector<Point>>& temp, int k_nei = 3); 
 
 private:
     BspSurface bsp_; // BspSurface实例
@@ -75,11 +52,37 @@ private:
     int k_, k_ex_; // 阶数，控制点扩展维度
 
 /**
+ *  \brief 计算XY平面上两点距离
+ */
+    double DistanceXY(const Point& p1, const Point& p2);
+    std::vector<std::vector<Point>> ctr_points_;
+
+/**
  *  \brief 根据输入点云计算控制点
  *  \param cloud
  */
     void GetControlPoint(PointCloud cloud);
-    
+
+/**
+ *  \brief Kd-tree版本控制点插值
+ *  \param cn_points 控制点
+ *  \param ptc_lists 由点云得到的控制点
+ *  \param k_kd 最近邻点个数
+ */
+    void InterpolatePointKd(std::vector<std::vector<Point>>& ctr_ptc, std::vector<Point>& ptc_lists, int k_kd = 3);
+
+/**
+ *  \brief 自适应半径区域搜索版控制点插值
+ *  \param ctr_ptc 控制点
+ */
+    void InterpolatePointAdaptRadius(std::vector<std::vector<Point>>& ctr_ptc, int k_nei = 3);
+
+/**
+ *  \brief 使用优先级队列维护最近邻解
+ *  \param temp 控制点
+ *  \param k_nei 最近邻个数
+ */
+    void InterpolatePointAdaptRadiusQueue(std::vector<std::vector<Point>>& ctr_ptc, int k_nei = 3);     
 };
 
 

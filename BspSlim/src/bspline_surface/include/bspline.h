@@ -100,14 +100,14 @@ public:
  *  \return Point
  */
 	Point GetFittingPoint(double x, double y);
-
+	std::vector<std::vector<Point>> m_cn_point_; // 控制点
 
 private:
 	int m_nu_; // 控制点的行数-1
 	int m_nv_; // 控制点列数-1
 	int m_ku_; // u向阶数
 	int m_kv_; // v向阶数
-	std::vector<std::vector<Point>> m_cn_point_; // 控制点
+	// std::vector<std::vector<Point>> m_cn_point_; // 控制点
 	std::vector<double> m_knots_u_; // u向节点向量
 	std::vector<double> m_knots_v_; // v向节点向量
 };

@@ -18,6 +18,7 @@ BspFitting::BspFitting(PointCloud ptc, double grid_size, int k)
 
     GetControlPoint(ptc);
     bsp_ = BspSurface(ctr_points_, k_);
+    // cn_point_pub_ = ctr_points_;
 }
 
 
@@ -121,10 +122,10 @@ void BspFitting::InterpolatePointAdaptRadiusQueue(std::vector<std::vector<Point>
     for (int i = 0; i < M; ++i) {
         for (int j = 0; j < N; ++j) {
             if (std::isinf(ctr_ptc[i][j].z)) {
-                std::priority_queue<std::pair<double, double>, std::vector<std::pair<double, double>>, Compare> pq;
-                int searchRadius = 3;
+                std::priority_queue<std::pair<double, double>> pq;
+                int searchRadius = 1;
 
-                // 搜索整个半径区域内的所有点
+                
                 while (pq.size() < 3 && searchRadius < std::max(M, N)) {
                     for (int di = -searchRadius; di <= searchRadius; ++di) {
                         for (int dj = -searchRadius; dj <= searchRadius; ++dj) {
@@ -134,20 +135,24 @@ void BspFitting::InterpolatePointAdaptRadiusQueue(std::vector<std::vector<Point>
                             if (ni >= 0 && ni < M && nj >= 0 && nj < N && !std::isinf(ctr_ptc[ni][nj].z)) {
                                 double distSq = DistanceXY(ctr_ptc[i][j], ctr_ptc[ni][nj]);
                                 pq.emplace(distSq, ctr_ptc[ni][nj].z);
+
+                                if (pq.size() > k_nei) { 
+                                    pq.pop();
+                                } 
                             }
                         }
                     }
                     searchRadius++;
                 }
 
-                // 检查找到的所有点，保留最小的k_nei个点
+                
                 std::vector<double> topKNearestZ;
                 while (!pq.empty() && topKNearestZ.size() < k_nei) {
                     topKNearestZ.push_back(pq.top().second);
                     pq.pop();
                 }
 
-                // 计算k_nei个最近点的z值的平均值
+                
                 double sumz = 0.0;
                 for (const double z : topKNearestZ) {
                     sumz += z;
@@ -157,7 +162,6 @@ void BspFitting::InterpolatePointAdaptRadiusQueue(std::vector<std::vector<Point>
         }
     }
 }
-
 
 
 void BspFitting::InterpolatePointAdaptRadius(std::vector<std::vector<Point>>& temp, int k_nei) {
@@ -172,7 +176,7 @@ void BspFitting::InterpolatePointAdaptRadius(std::vector<std::vector<Point>>& te
                 std::vector<Point> nearpoint;
                 std::vector<std::pair<double, double>> nearby_h; 
 
-                int searchRadius = 3; 
+                int searchRadius = 1; 
 
                 // adaptive expand search radius
                 while (nearpoint.size() < 3 && searchRadius < std::max(M, N)) {
