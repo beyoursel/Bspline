@@ -153,7 +153,6 @@ void BspFitting::InterpolatePointAdaptRadius(std::vector<std::vector<Point>>& te
 
                 int searchRadius = 1;
 
-                // 循环扩大搜索半径，直到找到至少3个有效点
                 while (nearpoint.size() < 3 && searchRadius < std::max(M, N)) {
                     for (int di = -searchRadius; di <= searchRadius; ++di) {
                         for (int dj = -searchRadius; dj <= searchRadius; ++dj) {
@@ -165,8 +164,12 @@ void BspFitting::InterpolatePointAdaptRadius(std::vector<std::vector<Point>>& te
                             }
                         }
                     }
-                    // std::cout << "nearby points: " << nearbyPoints.size() << std::endl;
-                    searchRadius = searchRadius + 1; // 增加搜索半径
+                    
+                    if (!nearpoint.empty()) {
+                        searchRadius += 2;
+                    } else {
+                        searchRadius += 1;
+                    }
                 }
 
                 for (auto ptc: nearpoint) {
