@@ -66,8 +66,8 @@ double BspFitting::GetBsplinePointLonLat(double lon, double lat) {
 void BspFitting::GetControlPoint(PointCloud cloud) {
 
     auto start = std::chrono::high_resolution_clock::now();
-    int M = static_cast<int>(x_range_ / grid_size_) + 2 + 2 * k_ex_;
-    int N = static_cast<int>(y_range_ / grid_size_) + 2 + 2 * k_ex_;   
+    int M = static_cast<int>(x_range_ / grid_size_) + 2 * k_ex_;
+    int N = static_cast<int>(y_range_ / grid_size_) + 2 * k_ex_;   
 
     double min_limit_x = min_pt_.x - k_ex_ * grid_size_;
     double min_limit_y = min_pt_.y - k_ex_ * grid_size_;

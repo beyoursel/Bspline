@@ -72,6 +72,16 @@ iomanip
 bspline_api.h
 /media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/src/bspline_surface/src/bspline_api.h
 
+/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/src/bspline_surface/src/bspline.cpp
+bspline.h
+/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/src/bspline_surface/src/bspline.h
+cmath
+-
+
+/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/src/bspline_surface/src/bspline_api.cpp
+bspline_api.h
+/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/src/bspline_surface/src/bspline_api.h
+
 /usr/include/eigen3/Eigen/Cholesky
 Core
 /usr/include/eigen3/Eigen/Core
