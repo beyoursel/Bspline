@@ -34,8 +34,7 @@ BspFitting::BspFitting(PointCloud ptc, double grid_size, int k)
     y_range_ = max_pt_.y - min_pt_.y;
 
     // std::cout << "x_range is: " << min_pt_.x << " " << max_pt_.x << std::endl;
-    // std::cout << "y_range is: " << min_pt_.y << " " << max_pt_.y << std::endl; 
-       
+    // std::cout << "y_range is: " << min_pt_.y << " " << max_pt_.y << std::endl;    
     // k_ex_ = 1;
 
     GetControlPoint(ptc);
@@ -45,10 +44,15 @@ BspFitting::BspFitting(PointCloud ptc, double grid_size, int k)
 
 Point BspFitting::GetBsplinePoint(double x, double y) {
 
-        if ((x < min_pt_.x || x > max_pt_.x || y < min_pt_.y || y > max_pt_.y)) { // 修改成knot_range
+        // if ((x < min_pt_.x || x > max_pt_.x || y < min_pt_.y || y > max_pt_.y)) { // 修改成knot_range
+        //     std::cerr << "the query point is out of the range" << std::endl;
+        //     std::exit(EXIT_FAILURE);
+        // }
+        if ((x < bsp_.knot_x_[0] || x > bsp_.knot_x_[bsp_.knot_x_.size() - 1] || y < bsp_.knot_y_[0] || y > bsp_.knot_y_[bsp_.knot_y_.size() - 1])) {
             std::cerr << "the query point is out of the range" << std::endl;
             std::exit(EXIT_FAILURE);
-        }
+        }  
+
         return bsp_.GetFittingPoint(x, y);
     }
 

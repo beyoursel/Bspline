@@ -73,10 +73,11 @@ public:
  *  \brief 在指定维度下对t位置进行拟合
  *  \param controlpoint 控制点
  *  \param knots 节点向量
- *  \param t
+ *  \param t 节点变量值
+ *  \param l 节点向量区间id
  *  \return Point
  */
-	Point CalPos(const std::vector<Point>& controlpoint, const std::vector<double>& knots, const double& t);
+	Point CalPos(const std::vector<Point>& controlpoint, const std::vector<double>& knots, const double& t, int l);
 
 /**
  *  \brief 设置节点向量
@@ -108,16 +109,25 @@ public:
  */
 	Point GetFittingPoint(double x, double y);
 
-	std::vector<std::vector<Point>> m_cn_point_; // 控制点
+/**
+ *  \brief 获得节点向量所处的knot_span区间位置
+ *  \param n 控制点数-1
+ *  \param k 阶数
+ *  \param t 节点向量
+ *  \return int 节点向量区间的id
+ */
+    int KnotId(const int& n, const int& k, const std::vector<double>& knots, const double& t);
+
+
+    std::vector<double> knot_x_; // knot-vector在ENU对应位置
+    std::vector<double> knot_y_; // 同上
 
 private:
 	int m_nu_; // 控制点的行数-1
 	int m_nv_; // 控制点列数-1
 	int m_ku_; // u向阶数
 	int m_kv_; // v向阶数
-    std::vector<double> knot_x_; // knot-vector在ENU对应位置
-    std::vector<double> knot_y_; // 同上
-	// std::vector<std::vector<Point>> m_cn_point_; // 控制点
+	std::vector<std::vector<Point>> m_cn_point_; // 控制点
 	std::vector<double> m_knots_u_; // u向节点向量
 	std::vector<double> m_knots_v_; // v向节点向量
 };

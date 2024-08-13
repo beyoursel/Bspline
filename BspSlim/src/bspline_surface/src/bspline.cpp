@@ -18,24 +18,10 @@ BspSurface::BspSurface(const std::vector<std::vector<Point>>& cn_point, int k)
 }
 
 
-Point BspSurface::CalPos(const double& u, const double& v) {
+int BspSurface::KnotId(const int& n, const int& k, const std::vector<double>& knots, const double& t) {
 
-    std::vector<Point> v_constant(m_nu_ + 1);
-    for (int i = 0; i < v_constant.size(); ++i)
-    {
-        v_constant[i] = CalPos(m_cn_point_[i], m_knots_v_, v);
-    }
-    return CalPos(v_constant, m_knots_u_, u);
-}
-
-
-Point BspSurface::CalPos(const std::vector<Point>& controlpoint, const std::vector<double>& knots, const double& t)
-{
-    int n = controlpoint.size() - 1;
-    int k = knots.size() - controlpoint.size();
     int L = 0;
-
-    if (t >= knots[n+1])
+        if (t >= knots[n+1])
     {
         L = n;
     } else if (t <= knots[k-1])
@@ -55,6 +41,34 @@ Point BspSurface::CalPos(const std::vector<Point>& controlpoint, const std::vect
     }
 
     if (L >= n + 1) L = n;
+
+    return L;
+}
+
+
+Point BspSurface::CalPos(const double& u, const double& v) {
+
+    // 判断u所在的knot_span
+    int u_id = KnotId(m_nu_, m_ku_, m_knots_u_, u);
+    int v_id = KnotId(m_nv_, m_kv_, m_knots_v_, v);
+    
+
+    // 根据u_id进行提前终止
+    std::vector<Point> v_constant(m_nu_ + 1, Point(0, 0, 0));
+
+    for (int i = u_id - m_ku_ + 1; i <= u_id; i++)
+    {
+        v_constant[i] = CalPos(m_cn_point_[i], m_knots_v_, v, v_id); 
+    }
+
+    return CalPos(v_constant, m_knots_u_, u, u_id);
+}
+
+
+Point BspSurface::CalPos(const std::vector<Point>& controlpoint, const std::vector<double>& knots, const double& t, int L)
+{
+    int n = controlpoint.size() - 1;
+    int k = knots.size() - controlpoint.size() - 1; // fix bug
 
     std::vector<Point> temp(k);
     for (int i = 0; i < k; ++i) {
@@ -173,12 +187,12 @@ void BspSurface::GetActualKnotSpan(std::vector<double>& knot_x, std::vector<doub
                 knot_x.push_back(temp.x);
             }
         }
-        // std::cout << std::endl;
-        // std::cout << "knot_x: ";
-        // for (auto& kn_x: knot_x) {
-        //     std::cout << kn_x << " ";
-        // }
-        // std::cout << std::endl;
+        std::cout << std::endl;
+        std::cout << "knot_x: ";
+        for (auto& kn_x: knot_x) {
+            std::cout << kn_x << " ";
+        }
+        std::cout << std::endl;
 
         for (int i = m_ku_ - 1; i <= m_ku_ - 1; i++) {
             for (int j = m_kv_ - 1; j <= m_nv_ + 2; j++) {
