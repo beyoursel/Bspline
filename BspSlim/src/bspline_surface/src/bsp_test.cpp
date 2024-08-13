@@ -119,53 +119,60 @@ int main(int argc, char** argv) {
 
     BspFitting bsp_fit(filtered_ground, 10.0, 3);
 
+    auto end = std::chrono::high_resolution_clock::now();
+
     Point ptc = bsp_fit.GetBsplinePoint(0, 0); // test
 
-    auto end = std::chrono::high_resolution_clock::now();
+    auto end1 = std::chrono::high_resolution_clock::now();
+    
     double duration = time_inc(end, start);
-    std::cout << "Bspline-fitting time: " << duration << " milliseconds" << std::endl;  
+    std::cout << "Bspline-fitting Initialization: " << duration << " milliseconds" << std::endl;  
+
+    double duration1 = time_inc(end1, end);
+    std::cout << "Query Bspline-fitting Point: " << duration1 << " milliseconds" << std::endl;  
+
 
     std::cout << "x: " << ptc.x << std::endl;
     std::cout << "y: " << ptc.y << std::endl;
 
     // -----------------test--------------------
 
-    std::vector<std::vector<double>> LonandLat = {{118.7806222, 31.8351078},
-                                                    {118.7810634, 31.8347478},
-                                                    {118.7814473, 31.8344676},
-                                                    {118.7814108, 31.8348904},
-                                                    {118.7806701, 31.8351548},
-                                                    {118.7815429, 31.8352704},
-                                                    {118.7811188, 31.8351964},
-                                                    {118.7820834, 31.8346503}
-                                                };
+    // std::vector<std::vector<double>> LonandLat = {{118.7806222, 31.8351078},
+    //                                                 {118.7810634, 31.8347478},
+    //                                                 {118.7814473, 31.8344676},
+    //                                                 {118.7814108, 31.8348904},
+    //                                                 {118.7806701, 31.8351548},
+    //                                                 {118.7815429, 31.8352704},
+    //                                                 {118.7811188, 31.8351964},
+    //                                                 {118.7820834, 31.8346503}
+    //                                             };
 
-    for (int i = 0; i < LonandLat.size(); i++) {
+    // for (int i = 0; i < LonandLat.size(); i++) {
         
-        double longti = LonandLat[i][0];
-        double lati = LonandLat[i][1];
+    //     double longti = LonandLat[i][0];
+    //     double lati = LonandLat[i][1];
 
-        double h = bsp_fit.GetBsplinePointLonLat(longti, lati);
+    //     double h = bsp_fit.GetBsplinePointLonLat(longti, lati);
 
-        std::cout << std::fixed << std::setprecision(8) << "longitude: " << longti << " " << "latitude: " << lati << " " << "height: " << h <<  std::endl;
-    }
+    //     std::cout << std::fixed << std::setprecision(8) << "longitude: " << longti << " " << "latitude: " << lati << " " << "height: " << h <<  std::endl;
+    // }
     
     // test
-    std::vector<std::vector<Point>> ctr_points_set = bsp_fit.cn_point_pub_; 
+    // std::vector<std::vector<Point>> ctr_points_set = bsp_fit.cn_point_pub_; 
 
-    // 提取控制点
-    std::vector<Point> control_points;
-    for (const auto& row : ctr_points_set)
-    {
-        for (const auto& point : row)
-        {
-            control_points.push_back(point);
-        }
-    }
+    // // 提取控制点
+    // std::vector<Point> control_points;
+    // for (const auto& row : ctr_points_set)
+    // {
+    //     for (const auto& point : row)
+    //     {
+    //         control_points.push_back(point);
+    //     }
+    // }
 
 
-    // 可视化拟合点和控制点
-    VisualizePointCloudV2(filtered_ground, control_points);
+    // // 可视化拟合点和控制点
+    // VisualizePointCloudV2(filtered_ground, control_points);
 
     return 0;
 }

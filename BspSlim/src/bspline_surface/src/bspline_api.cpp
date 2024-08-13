@@ -33,17 +33,19 @@ BspFitting::BspFitting(PointCloud ptc, double grid_size, int k)
     x_range_ = max_pt_.x - min_pt_.x;
     y_range_ = max_pt_.y - min_pt_.y;
 
-    k_ex_ = 1;
+    // std::cout << "x_range is: " << min_pt_.x << " " << max_pt_.x << std::endl;
+    // std::cout << "y_range is: " << min_pt_.y << " " << max_pt_.y << std::endl; 
+       
+    // k_ex_ = 1;
 
     GetControlPoint(ptc);
     bsp_ = BspSurface(ctr_points_, k_);
-    cn_point_pub_ = ctr_points_;
 }
 
 
 Point BspFitting::GetBsplinePoint(double x, double y) {
 
-        if ((x < min_pt_.x || x > max_pt_.x || y < min_pt_.y || y > max_pt_.y)) {
+        if ((x < min_pt_.x || x > max_pt_.x || y < min_pt_.y || y > max_pt_.y)) { // 修改成knot_range
             std::cerr << "the query point is out of the range" << std::endl;
             std::exit(EXIT_FAILURE);
         }
@@ -62,22 +64,18 @@ double BspFitting::GetBsplinePointLonLat(double lon, double lat) {
     return query_p.z + HOME_LATITUDE;
 }
 
-
 void BspFitting::GetControlPoint(PointCloud cloud) {
 
     auto start = std::chrono::high_resolution_clock::now();
-    int M = static_cast<int>(x_range_ / grid_size_) + 2 * k_ex_;
-    int N = static_cast<int>(y_range_ / grid_size_) + 2 * k_ex_;   
-
-    double min_limit_x = min_pt_.x - k_ex_ * grid_size_;
-    double min_limit_y = min_pt_.y - k_ex_ * grid_size_;
+    int M = static_cast<int>(x_range_ / grid_size_);
+    int N = static_cast<int>(y_range_ / grid_size_);   
 
     std::vector<std::vector<Grid_T>> grids(M, std::vector<Grid_T>(N));
 
     for (size_t i = 0; i < cloud->points.size(); ++i) {
         const auto& point = cloud->points[i];
-        int grid_x = static_cast<int>((point.x - min_pt_.x) / grid_size_) + k_ex_;
-        int grid_y = static_cast<int>((point.y - min_pt_.y) / grid_size_) + k_ex_;
+        int grid_x = static_cast<int>((point.x - min_pt_.x) / grid_size_);
+        int grid_y = static_cast<int>((point.y - min_pt_.y) / grid_size_);
 
         if (grid_x >= 0 && grid_x < M && grid_y >= 0 && grid_y < N) {
 
@@ -105,11 +103,11 @@ void BspFitting::GetControlPoint(PointCloud cloud) {
                 }
 
                 // one point at the bottom of 10%
-                ctr_ptc[i][j] =  Point((i + 0.5) * grid_size_ + min_limit_x, (j + 0.5) * grid_size_ + min_limit_y, grid_points[retain_count-1].z);
+                ctr_ptc[i][j] =  Point((i + 0.5) * grid_size_ + min_pt_.x, (j + 0.5) * grid_size_ + min_pt_.y, grid_points[retain_count-1].z);
                 ptc_list.push_back(ctr_ptc[i][j]);
 
             } else {
-                ctr_ptc[i][j] = Point((i + 0.5) * grid_size_ + min_limit_x, (j + 0.5) * grid_size_ + min_limit_y, MAX_DOUBLE);
+                ctr_ptc[i][j] = Point((i + 0.5) * grid_size_ + min_pt_.x, (j + 0.5) * grid_size_ + min_pt_.y, MAX_DOUBLE);
             }
 
         }
@@ -120,6 +118,65 @@ void BspFitting::GetControlPoint(PointCloud cloud) {
 
     ctr_points_ = ctr_ptc;
 }
+
+
+// void BspFitting::GetControlPoint(PointCloud cloud) {
+
+//     auto start = std::chrono::high_resolution_clock::now();
+//     int M = static_cast<int>(x_range_ / grid_size_) + 2 * k_ex_;
+//     int N = static_cast<int>(y_range_ / grid_size_) + 2 * k_ex_;   
+
+//     double min_limit_x = min_pt_.x - k_ex_ * grid_size_;
+//     double min_limit_y = min_pt_.y - k_ex_ * grid_size_;
+
+//     std::vector<std::vector<Grid_T>> grids(M, std::vector<Grid_T>(N));
+
+//     for (size_t i = 0; i < cloud->points.size(); ++i) {
+//         const auto& point = cloud->points[i];
+//         int grid_x = static_cast<int>((point.x - min_pt_.x) / grid_size_) + k_ex_;
+//         int grid_y = static_cast<int>((point.y - min_pt_.y) / grid_size_) + k_ex_;
+
+//         if (grid_x >= 0 && grid_x < M && grid_y >= 0 && grid_y < N) {
+
+//             grids[grid_x][grid_y].points.push_back({point.x, point.y, point.z});
+//         }
+//     }
+
+//     std::vector<std::vector<Point>> ctr_ptc(M, std::vector<Point>(N));
+
+//     std::vector<Point> ptc_list;
+
+//     for (int i = 0; i < M; ++i) {
+//         for (int j = 0; j < N; ++j) {
+//             auto& grid_points = grids[i][j].points;
+
+//             if (!grid_points.empty()) {
+
+
+//                 std::sort(grid_points.begin(), grid_points.end(), [](Point a, Point b) { return a.z < b.z; });
+
+//                 size_t retain_count = static_cast<size_t>(grid_points.size() * 0.1);
+
+//                 if (retain_count < 1) {
+//                     retain_count = 1;
+//                 }
+
+//                 // one point at the bottom of 10%
+//                 ctr_ptc[i][j] =  Point((i + 0.5) * grid_size_ + min_limit_x, (j + 0.5) * grid_size_ + min_limit_y, grid_points[retain_count-1].z);
+//                 ptc_list.push_back(ctr_ptc[i][j]);
+
+//             } else {
+//                 ctr_ptc[i][j] = Point((i + 0.5) * grid_size_ + min_limit_x, (j + 0.5) * grid_size_ + min_limit_y, MAX_DOUBLE);
+//             }
+
+//         }
+//     }
+
+
+//     InterpolatePointKd(ctr_ptc, ptc_list);
+
+//     ctr_points_ = ctr_ptc;
+// }
 
 
 void BspFitting::InterpolatePointKd(std::vector<std::vector<Point>>& cn_points, std::vector<Point>& ptc_lists, int k_kd) {

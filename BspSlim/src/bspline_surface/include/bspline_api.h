@@ -32,7 +32,6 @@ struct Grid_T {
 class BspFitting
 {
 public:
-    std::vector<std::vector<Point>> cn_point_pub_; 
 
 /**
  *  \brief Construct a new BspFitting object
