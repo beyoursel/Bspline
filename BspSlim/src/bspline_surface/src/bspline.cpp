@@ -7,10 +7,13 @@ BspSurface::BspSurface(const std::vector<std::vector<Point>>& cn_point, int k)
     m_ku_ = k;
     m_kv_ = k;
     m_cn_point_ = cn_point;
+
     SetKnotVector(m_cn_point_, m_knots_u_, m_knots_v_);
 
     m_nu_ = m_cn_point_.size() - 1; 
     m_nv_ = m_cn_point_[0].size() - 1; 
+
+    GetActualKnotSpan(knot_x_, knot_y_);
 
 }
 
@@ -158,63 +161,56 @@ void BspSurface::SetKnotVector(std::vector<std::vector<Point>> cnPoint, std::vec
     // std::cout << std::endl;
 }
 
-Point BspSurface::GetFittingPoint(double x, double y)
-{   
 
-    std::vector<double> knot_x;
-    std::vector<double> knot_y;
-
+void BspSurface::GetActualKnotSpan(std::vector<double>& knot_x, std::vector<double>& knot_y) {
 
     for (int j = m_kv_ - 1; j <= m_kv_ - 1; j++) { // little bug
-        for (int i = m_ku_ - 1; i <= m_nu_ + 2; i++) 
-        {
-            double u = m_knots_u_[i];
-            double v = m_knots_v_[j];
-            Point temp = CalPos(u, v);
-            knot_x.push_back(temp.x);
-            // std::cout << u << " ";
+            for (int i = m_ku_ - 1; i <= m_nu_ + 2; i++) 
+            {
+                double u = m_knots_u_[i];
+                double v = m_knots_v_[j];
+                Point temp = CalPos(u, v);
+                knot_x.push_back(temp.x);
+            }
         }
-    }
-    // std::cout << std::endl;
-    // std::cout << "knot_x: ";
-    // for (auto& kn_x: knot_x) {
-    //     std::cout << kn_x << " ";
-    // }
-    // std::cout << std::endl;
+        // std::cout << std::endl;
+        // std::cout << "knot_x: ";
+        // for (auto& kn_x: knot_x) {
+        //     std::cout << kn_x << " ";
+        // }
+        // std::cout << std::endl;
 
-    for (int i = m_ku_ - 1; i <= m_ku_ - 1; i++) {
-        for (int j = m_kv_ - 1; j <= m_nv_ + 2; j++) {
-            double u = m_knots_u_[i];
-            double v = m_knots_v_[j];
-            Point temp = CalPos(u, v);
-            knot_y.push_back(temp.y);
-            // std::cout << v << " ";
+        for (int i = m_ku_ - 1; i <= m_ku_ - 1; i++) {
+            for (int j = m_kv_ - 1; j <= m_nv_ + 2; j++) {
+                double u = m_knots_u_[i];
+                double v = m_knots_v_[j];
+                Point temp = CalPos(u, v);
+                knot_y.push_back(temp.y);
+            }
         }
-    }
 
-    // std::cout << "knot_y: " << std::endl;
-    // for (auto& kn_y: knot_y) {
-    //     std::cout << kn_y << " ";
-    // }
-    // std::cout << std::endl;
+}
 
+
+Point BspSurface::GetFittingPoint(double x, double y)
+{   
     int knot_grid_x;
     int knot_grid_y;
 
-    for (int i = 0; i < knot_x.size() - 1; i++) {
-        if (x >= knot_x[i] && x <knot_x[i+1]) {
+    for (int i = 0; i < knot_x_.size() - 1; i++) {
+        if (x >= knot_x_[i] && x <knot_x_[i+1]) {
             knot_grid_x = i;
         }
     }
 
-    for (int i = 0; i < knot_y.size() - 1; i++) {
-        if (y >= knot_y[i] && y <knot_y[i+1]) {
+    for (int i = 0; i < knot_y_.size() - 1; i++) {
+        if (y >= knot_y_[i] && y <knot_y_[i+1]) {
             knot_grid_y = i;
         }
     }
 
-    float lu = (x - knot_x[knot_grid_x]) / (knot_x[knot_grid_x + 1] - knot_x[knot_grid_x]) * (m_knots_u_[m_ku_ - 1 + knot_grid_x + 1] - m_knots_u_[m_ku_ - 1 + knot_grid_x]); 
-    float lv = (y - knot_y[knot_grid_y]) / (knot_y[knot_grid_y + 1] - knot_y[knot_grid_y]) * (m_knots_v_[m_kv_ - 1 + knot_grid_y + 1] - m_knots_v_[m_kv_ - 1 + knot_grid_y]);
+    float lu = (x - knot_x_[knot_grid_x]) / (knot_x_[knot_grid_x + 1] - knot_x_[knot_grid_x]) * (m_knots_u_[m_ku_ - 1 + knot_grid_x + 1] - m_knots_u_[m_ku_ - 1 + knot_grid_x]); 
+    float lv = (y - knot_y_[knot_grid_y]) / (knot_y_[knot_grid_y + 1] - knot_y_[knot_grid_y]) * (m_knots_v_[m_kv_ - 1 + knot_grid_y + 1] - m_knots_v_[m_kv_ - 1 + knot_grid_y]);
 
     Point temp1 = CalPos(m_knots_u_[m_ku_ -1 + knot_grid_x] + lu, m_knots_v_[m_kv_ - 1 + knot_grid_y] + lv);
 

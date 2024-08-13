@@ -94,12 +94,20 @@ public:
 	void GetFittingSurface(std::vector<Point>& vertices, double step);
 
 /**
+ * \brief 获得knot_vector在ENU中实际位置
+ * \param knot_x 保存u向knot对应的ENU位置
+ * \param knot_y 保存v向knot对应的ENU位置
+ */
+    void GetActualKnotSpan(std::vector<double>& knot_x, std::vector<double>& knot_y);
+
+/**
  *  \brief 输入{(x, y) ENU坐标系}获得对应位置拟合的高度
  *  \param x
  *  \param y
  *  \return Point
  */
 	Point GetFittingPoint(double x, double y);
+
 	std::vector<std::vector<Point>> m_cn_point_; // 控制点
 
 private:
@@ -107,6 +115,8 @@ private:
 	int m_nv_; // 控制点列数-1
 	int m_ku_; // u向阶数
 	int m_kv_; // v向阶数
+    std::vector<double> knot_x_; // knot-vector在ENU对应位置
+    std::vector<double> knot_y_; // 同上
 	// std::vector<std::vector<Point>> m_cn_point_; // 控制点
 	std::vector<double> m_knots_u_; // u向节点向量
 	std::vector<double> m_knots_v_; // v向节点向量
