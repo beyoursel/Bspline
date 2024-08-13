@@ -211,6 +211,11 @@ Point BspSurface::GetFittingPoint(double x, double y)
     int knot_grid_x;
     int knot_grid_y;
 
+    if ((x < knot_x_[0] || x > knot_x_[knot_x_.size() - 1] || y < knot_y_[0] || y > knot_y_[knot_y_.size() - 1])) {
+        std::cerr << "the query point is out of the range" << std::endl;
+        std::exit(EXIT_FAILURE);
+    }  
+
     for (int i = 0; i < knot_x_.size() - 1; i++) {
         if (x >= knot_x_[i] && x <knot_x_[i+1]) {
             knot_grid_x = i;
