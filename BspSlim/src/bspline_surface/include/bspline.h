@@ -77,7 +77,8 @@ public:
  *  \param l 节点向量区间id
  *  \return Point
  */
-	Point CalPos(const std::vector<Point>& controlpoint, const std::vector<double>& knots, const double& t, int l);
+	// Point CalPos(const std::vector<Point>& controlpoint, const std::vector<double>& knots, const double& t, int l);
+	Point CalPos(const std::vector<Point>& controlpoint, const std::vector<double>& knots, const double& t);
 
 /**
  *  \brief 设置节点向量

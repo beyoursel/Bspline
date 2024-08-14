@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/src
+CMAKE_SOURCE_DIR = /media/mydisk/Doc/daily_work/Bspline/BspSlim/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/build
+CMAKE_BINARY_DIR = /media/mydisk/Doc/daily_work/Bspline/BspSlim/build
 
 # Utility rule file for sensor_msgs_generate_messages_eus.
 
@@ -63,10 +63,10 @@ bspline_surface/CMakeFiles/sensor_msgs_generate_messages_eus.dir/build: sensor_m
 .PHONY : bspline_surface/CMakeFiles/sensor_msgs_generate_messages_eus.dir/build
 
 bspline_surface/CMakeFiles/sensor_msgs_generate_messages_eus.dir/clean:
-	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/build/bspline_surface && $(CMAKE_COMMAND) -P CMakeFiles/sensor_msgs_generate_messages_eus.dir/cmake_clean.cmake
+	cd /media/mydisk/Doc/daily_work/Bspline/BspSlim/build/bspline_surface && $(CMAKE_COMMAND) -P CMakeFiles/sensor_msgs_generate_messages_eus.dir/cmake_clean.cmake
 .PHONY : bspline_surface/CMakeFiles/sensor_msgs_generate_messages_eus.dir/clean
 
 bspline_surface/CMakeFiles/sensor_msgs_generate_messages_eus.dir/depend:
-	cd /media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/src /media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/src/bspline_surface /media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/build /media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/build/bspline_surface /media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/build/bspline_surface/CMakeFiles/sensor_msgs_generate_messages_eus.dir/DependInfo.cmake --color=$(COLOR)
+	cd /media/mydisk/Doc/daily_work/Bspline/BspSlim/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /media/mydisk/Doc/daily_work/Bspline/BspSlim/src /media/mydisk/Doc/daily_work/Bspline/BspSlim/src/bspline_surface /media/mydisk/Doc/daily_work/Bspline/BspSlim/build /media/mydisk/Doc/daily_work/Bspline/BspSlim/build/bspline_surface /media/mydisk/Doc/daily_work/Bspline/BspSlim/build/bspline_surface/CMakeFiles/sensor_msgs_generate_messages_eus.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : bspline_surface/CMakeFiles/sensor_msgs_generate_messages_eus.dir/depend
 

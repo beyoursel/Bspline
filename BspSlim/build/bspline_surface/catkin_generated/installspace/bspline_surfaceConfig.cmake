@@ -67,14 +67,14 @@ set(bspline_surface_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(bspline_surface_SOURCE_PREFIX /media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/src/bspline_surface)
-  set(bspline_surface_DEVEL_PREFIX /media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/devel)
+  set(bspline_surface_SOURCE_PREFIX /media/mydisk/Doc/daily_work/Bspline/BspSlim/src/bspline_surface)
+  set(bspline_surface_DEVEL_PREFIX /media/mydisk/Doc/daily_work/Bspline/BspSlim/devel)
   set(bspline_surface_INSTALL_PREFIX "")
   set(bspline_surface_PREFIX ${bspline_surface_DEVEL_PREFIX})
 else()
   set(bspline_surface_SOURCE_PREFIX "")
   set(bspline_surface_DEVEL_PREFIX "")
-  set(bspline_surface_INSTALL_PREFIX /media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/install)
+  set(bspline_surface_INSTALL_PREFIX /media/mydisk/Doc/daily_work/Bspline/BspSlim/install)
   set(bspline_surface_PREFIX ${bspline_surface_INSTALL_PREFIX})
 endif()
 
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/install/lib;/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/devel/lib;/opt/ros/noetic/lib)
+    foreach(path /media/mydisk/Doc/daily_work/Bspline/BspSlim/install/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

@@ -4,5 +4,5 @@ PROJECT_PKG_CONFIG_INCLUDE_DIRS = "${prefix}/include".split(';') if "${prefix}/i
 PROJECT_CATKIN_DEPENDS = "pcl_msgs;pcl_ros;roscpp;rospy;std_msgs;pcl_conversions".replace(';', ' ')
 PKG_CONFIG_LIBRARIES_WITH_PREFIX = "-lptc_demo".split(';') if "-lptc_demo" != "" else []
 PROJECT_NAME = "bspline_surface"
-PROJECT_SPACE_DIR = "/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/install"
+PROJECT_SPACE_DIR = "/media/mydisk/Doc/daily_work/Bspline/BspSlim/install"
 PROJECT_VERSION = "0.0.0"

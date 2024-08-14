@@ -2,7 +2,7 @@
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/install")
+  set(CMAKE_INSTALL_PREFIX "/media/mydisk/Doc/daily_work/Bspline/BspSlim/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 

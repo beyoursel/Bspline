@@ -13,6 +13,10 @@ BspSurface::BspSurface(const std::vector<std::vector<Point>>& cn_point, int k)
     m_nu_ = m_cn_point_.size() - 1; 
     m_nv_ = m_cn_point_[0].size() - 1; 
 
+    std::cout << m_cn_point_[12][11].x << std::endl;
+    std::cout << m_cn_point_[12][11].y << std::endl;
+    std::cout << m_cn_point_[12][11].z << std::endl;
+    
     GetActualKnotSpan(knot_x_, knot_y_);
 
 }
@@ -48,27 +52,41 @@ int BspSurface::KnotId(const int& n, const int& k, const std::vector<double>& kn
 
 Point BspSurface::CalPos(const double& u, const double& v) {
 
-    // 判断u所在的knot_span
-    int u_id = KnotId(m_nu_, m_ku_, m_knots_u_, u);
-    int v_id = KnotId(m_nv_, m_kv_, m_knots_v_, v);
-    
-
-    // 根据u_id进行提前终止
-    std::vector<Point> v_constant(m_nu_ + 1, Point(0, 0, 0));
-
-    for (int i = u_id - m_ku_ + 1; i <= u_id; i++)
+    std::vector<Point> v_constant(m_nu_ + 1);
+    for (int i = 0; i < v_constant.size(); ++i)
     {
-        v_constant[i] = CalPos(m_cn_point_[i], m_knots_v_, v, v_id); 
+        v_constant[i] = CalPos(m_cn_point_[i], m_knots_v_, v);
     }
-
-    return CalPos(v_constant, m_knots_u_, u, u_id);
+    return CalPos(v_constant, m_knots_u_, u);
 }
 
 
-Point BspSurface::CalPos(const std::vector<Point>& controlpoint, const std::vector<double>& knots, const double& t, int L)
+Point BspSurface::CalPos(const std::vector<Point>& controlpoint, const std::vector<double>& knots, const double& t)
 {
     int n = controlpoint.size() - 1;
-    int k = knots.size() - controlpoint.size() - 1; // fix bug
+    int k = knots.size() - controlpoint.size();
+    int L = 0;
+
+    if (t >= knots[n+1])
+    {
+        L = n;
+    } else if (t <= knots[k-1])
+    {
+        L = k - 1;
+    }
+    else
+    {
+        for (int i = k - 1; i <= n + 1; ++i)
+        {
+            if (t >= knots[i] && t<knots[i+1])
+            {
+                L = i;
+                break;
+            }
+        }
+    }
+
+    if (L >= n + 1) L = n;
 
     std::vector<Point> temp(k);
     for (int i = 0; i < k; ++i) {
@@ -94,6 +112,57 @@ Point BspSurface::CalPos(const std::vector<Point>& controlpoint, const std::vect
     return temp[0];
 
 }
+
+
+
+// Point BspSurface::CalPos(const double& u, const double& v) {
+
+//     // 判断u所在的knot_span
+//     int u_id = KnotId(m_nu_, m_ku_, m_knots_u_, u);
+//     int v_id = KnotId(m_nv_, m_kv_, m_knots_v_, v);
+    
+
+//     // 根据u_id进行提前终止
+//     std::vector<Point> v_constant(m_nu_ + 1, Point(0, 0, 0));
+
+//     for (int i = u_id - m_ku_ + 1; i <= u_id; i++)
+//     {
+//         v_constant[i] = CalPos(m_cn_point_[i], m_knots_v_, v, v_id); 
+//     }
+
+//     return CalPos(v_constant, m_knots_u_, u, u_id);
+// }
+
+
+// Point BspSurface::CalPos(const std::vector<Point>& controlpoint, const std::vector<double>& knots, const double& t, int L)
+// {
+//     int n = controlpoint.size() - 1;
+//     int k = knots.size() - controlpoint.size() - 1; // fix bug
+
+//     std::vector<Point> temp(k);
+//     for (int i = 0; i < k; ++i) {
+//         temp[i] = controlpoint[i + L - k + 1];
+//     }
+
+//     //de-BoorCox
+//     for (int r = 1; r <= k - 1; ++r)
+//     {
+//         for (int i = 0; i <= k - r - 1; ++i)
+//         {
+//             int index = L - k + 1 + r;
+//             double factor = 0;
+//             if (knots[index + i + k - r] != knots[index + i])
+//             {
+//                 factor = (t - knots[index + i]) / (knots[index + i + k - r] - knots[index + i]);
+//             }
+//             temp[i] = factor*temp[i + 1] + (1 - factor)*temp[i];
+
+//         }
+//     }
+
+//     return temp[0];
+
+// }
 
 
 void BspSurface::GetFittingSurface(
@@ -187,12 +256,6 @@ void BspSurface::GetActualKnotSpan(std::vector<double>& knot_x, std::vector<doub
                 knot_x.push_back(temp.x);
             }
         }
-        std::cout << std::endl;
-        std::cout << "knot_x: ";
-        for (auto& kn_x: knot_x) {
-            std::cout << kn_x << " ";
-        }
-        std::cout << std::endl;
 
         for (int i = m_ku_ - 1; i <= m_ku_ - 1; i++) {
             for (int j = m_kv_ - 1; j <= m_nv_ + 2; j++) {
@@ -210,11 +273,6 @@ Point BspSurface::GetFittingPoint(double x, double y)
 {   
     int knot_grid_x;
     int knot_grid_y;
-
-    if ((x < knot_x_[0] || x > knot_x_[knot_x_.size() - 1] || y < knot_y_[0] || y > knot_y_[knot_y_.size() - 1])) {
-        std::cerr << "the query point is out of the range" << std::endl;
-        std::exit(EXIT_FAILURE);
-    }  
 
     for (int i = 0; i < knot_x_.size() - 1; i++) {
         if (x >= knot_x_[i] && x <knot_x_[i+1]) {

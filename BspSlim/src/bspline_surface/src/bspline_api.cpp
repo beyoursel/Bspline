@@ -44,10 +44,10 @@ BspFitting::BspFitting(PointCloud ptc, double grid_size, int k)
 
 Point BspFitting::GetBsplinePoint(double x, double y) {
 
-        // if ((x < min_pt_.x || x > max_pt_.x || y < min_pt_.y || y > max_pt_.y)) { // 修改成knot_range
-        //     std::cerr << "the query point is out of the range" << std::endl;
-        //     std::exit(EXIT_FAILURE);
-        // }
+        if ((x < min_pt_.x || x > max_pt_.x || y < min_pt_.y || y > max_pt_.y)) { // 修改成knot_range
+            std::cerr << "the query point is out of the range" << std::endl;
+            std::exit(EXIT_FAILURE);
+        }
         return bsp_.GetFittingPoint(x, y);
     }
 
@@ -66,8 +66,8 @@ double BspFitting::GetBsplinePointLonLat(double lon, double lat) {
 void BspFitting::GetControlPoint(PointCloud cloud) {
 
     auto start = std::chrono::high_resolution_clock::now();
-    int M = static_cast<int>(x_range_ / grid_size_);
-    int N = static_cast<int>(y_range_ / grid_size_);   
+    int M = static_cast<int>(x_range_ / grid_size_) + 1;
+    int N = static_cast<int>(y_range_ / grid_size_) + 1;   
 
     std::vector<std::vector<Grid_T>> grids(M, std::vector<Grid_T>(N));
 

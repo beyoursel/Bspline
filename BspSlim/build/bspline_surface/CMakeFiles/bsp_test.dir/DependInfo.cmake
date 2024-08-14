@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/src/bspline_surface/src/bsp_test.cpp" "/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bsp_test.cpp.o"
-  "/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/src/bspline_surface/src/bspline.cpp" "/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bspline.cpp.o"
-  "/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/src/bspline_surface/src/bspline_api.cpp" "/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bspline_api.cpp.o"
+  "/media/mydisk/Doc/daily_work/Bspline/BspSlim/src/bspline_surface/src/bsp_test.cpp" "/media/mydisk/Doc/daily_work/Bspline/BspSlim/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bsp_test.cpp.o"
+  "/media/mydisk/Doc/daily_work/Bspline/BspSlim/src/bspline_surface/src/bspline.cpp" "/media/mydisk/Doc/daily_work/Bspline/BspSlim/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bspline.cpp.o"
+  "/media/mydisk/Doc/daily_work/Bspline/BspSlim/src/bspline_surface/src/bspline_api.cpp" "/media/mydisk/Doc/daily_work/Bspline/BspSlim/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bspline_api.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -25,7 +25,7 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/src/bspline_surface/include"
+  "/media/mydisk/Doc/daily_work/Bspline/BspSlim/src/bspline_surface/include"
   "/opt/ros/noetic/include"
   "/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp"
   "/usr/include/vtk-7.1"

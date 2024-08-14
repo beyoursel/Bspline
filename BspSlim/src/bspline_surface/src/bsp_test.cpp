@@ -121,7 +121,10 @@ int main(int argc, char** argv) {
 
     auto end = std::chrono::high_resolution_clock::now();
 
-    Point ptc = bsp_fit.GetBsplinePoint(0, 0); // test
+
+
+
+    Point ptc = bsp_fit.GetBsplinePoint(-3.35388, -0.397552); // test
 
     auto end1 = std::chrono::high_resolution_clock::now();
 
@@ -134,28 +137,29 @@ int main(int argc, char** argv) {
 
     std::cout << "x: " << ptc.x << std::endl;
     std::cout << "y: " << ptc.y << std::endl;
+    std::cout << "z: " << ptc.z << std::endl;
 
     // -----------------test--------------------
 
-    std::vector<std::vector<double>> LonandLat = {{118.7806222, 31.8351078},
-                                                    {118.7810634, 31.8347478},
-                                                    {118.7814473, 31.8344676},
-                                                    {118.7814108, 31.8348904},
-                                                    {118.7806701, 31.8351548},
-                                                    {118.7815429, 31.8352704},
-                                                    {118.7811188, 31.8351964},
-                                                    {118.7820834, 31.8346503}
-                                                };
+    // std::vector<std::vector<double>> LonandLat = {{118.7806222, 31.8351078},
+    //                                                 {118.7810634, 31.8347478},
+    //                                                 {118.7814473, 31.8344676},
+    //                                                 {118.7814108, 31.8348904},
+    //                                                 {118.7806701, 31.8351548},
+    //                                                 {118.7815429, 31.8352704},
+    //                                                 {118.7811188, 31.8351964},
+    //                                                 {118.7820834, 31.8346503}
+    //                                             };
 
-    for (int i = 0; i < LonandLat.size(); i++) {
+    // for (int i = 0; i < LonandLat.size(); i++) {
         
-        double longti = LonandLat[i][0];
-        double lati = LonandLat[i][1];
+    //     double longti = LonandLat[i][0];
+    //     double lati = LonandLat[i][1];
 
-        double h = bsp_fit.GetBsplinePointLonLat(longti, lati);
+    //     double h = bsp_fit.GetBsplinePointLonLat(longti, lati);
 
-        std::cout << std::fixed << std::setprecision(8) << "longitude: " << longti << " " << "latitude: " << lati << " " << "height: " << h <<  std::endl;
-    }
+    //     std::cout << std::fixed << std::setprecision(8) << "longitude: " << longti << " " << "latitude: " << lati << " " << "height: " << h <<  std::endl;
+    // }
     
     // test
     // std::vector<std::vector<Point>> ctr_points_set = bsp_fit.cn_point_pub_; 

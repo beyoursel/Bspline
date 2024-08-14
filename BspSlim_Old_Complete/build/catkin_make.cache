@@ -1,0 +1,2 @@
+bspline_surface
+-DCATKIN_DEVEL_PREFIX=/media/taole/Elements/bsp_work/BspSlim_Old/devel -DCMAKE_INSTALL_PREFIX=/media/taole/Elements/bsp_work/BspSlim_Old/install -G Unix Makefiles

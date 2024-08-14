@@ -1,4 +1,4 @@
-prefix=/media/mydisk/Doc/daily_work/work_tg/Bspline/BspSlim/install
+prefix=/media/mydisk/Doc/daily_work/Bspline/BspSlim/install
 
 Name: bspline_surface
 Description: Description of bspline_surface
