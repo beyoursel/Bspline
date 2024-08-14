@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/src/bsp_test.cpp" "/media/taole/Elements/bsp_work/BspSlim_Old/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bsp_test.cpp.o"
-  "/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/src/bspline.cpp" "/media/taole/Elements/bsp_work/BspSlim_Old/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bspline.cpp.o"
-  "/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/src/bspline_api.cpp" "/media/taole/Elements/bsp_work/BspSlim_Old/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bspline_api.cpp.o"
+  "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src/bspline_surface/src/bsp_test.cpp" "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bsp_test.cpp.o"
+  "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src/bspline_surface/src/bspline.cpp" "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bspline.cpp.o"
+  "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src/bspline_surface/src/bspline_api.cpp" "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/build/bspline_surface/CMakeFiles/bsp_test.dir/src/bspline_api.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "GNU")
 
@@ -25,7 +25,7 @@ set(CMAKE_TARGET_DEFINITIONS_CXX
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
-  "/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/include"
+  "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src/bspline_surface/include"
   "/opt/ros/noetic/include"
   "/opt/ros/noetic/share/xmlrpcpp/cmake/../../../include/xmlrpcpp"
   "/usr/include/vtk-7.1"

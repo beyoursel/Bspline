@@ -6,15 +6,15 @@
 
 #IncludeRegexTransform: 
 
-/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/include/bspline.h
+/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src/bspline_surface/include/bspline.h
 vector
 -
 iostream
 -
 
-/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/include/bspline_api.h
+/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src/bspline_surface/include/bspline_api.h
 bspline.h
-/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/include/bspline.h
+/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src/bspline_surface/include/bspline.h
 pcl/point_types.h
 -
 pcl/point_cloud.h
@@ -34,7 +34,7 @@ algorithm
 cmath
 -
 
-/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/src/bsp_test.cpp
+/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src/bspline_surface/src/bsp_test.cpp
 iostream
 -
 vector
@@ -70,17 +70,7 @@ cmath
 iomanip
 -
 bspline_api.h
-/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/src/bspline_api.h
-
-/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/src/bspline.cpp
-bspline.h
-/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/src/bspline.h
-cmath
--
-
-/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/src/bspline_api.cpp
-bspline_api.h
-/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/src/bspline_api.h
+/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src/bspline_surface/src/bspline_api.h
 
 /usr/include/eigen3/Eigen/Cholesky
 Core

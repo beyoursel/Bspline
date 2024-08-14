@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /media/taole/Elements/bsp_work/BspSlim_Old/src
+CMAKE_SOURCE_DIR = /media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /media/taole/Elements/bsp_work/BspSlim_Old/build
+CMAKE_BINARY_DIR = /media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/build
 
 # Utility rule file for tests.
 
@@ -67,6 +67,6 @@ CMakeFiles/tests.dir/clean:
 .PHONY : CMakeFiles/tests.dir/clean
 
 CMakeFiles/tests.dir/depend:
-	cd /media/taole/Elements/bsp_work/BspSlim_Old/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /media/taole/Elements/bsp_work/BspSlim_Old/src /media/taole/Elements/bsp_work/BspSlim_Old/src /media/taole/Elements/bsp_work/BspSlim_Old/build /media/taole/Elements/bsp_work/BspSlim_Old/build /media/taole/Elements/bsp_work/BspSlim_Old/build/CMakeFiles/tests.dir/DependInfo.cmake --color=$(COLOR)
+	cd /media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src /media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src /media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/build /media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/build /media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/build/CMakeFiles/tests.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/tests.dir/depend
 

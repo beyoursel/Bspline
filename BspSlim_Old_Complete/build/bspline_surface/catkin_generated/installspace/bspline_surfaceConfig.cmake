@@ -67,14 +67,14 @@ set(bspline_surface_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(bspline_surface_SOURCE_PREFIX /media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface)
-  set(bspline_surface_DEVEL_PREFIX /media/taole/Elements/bsp_work/BspSlim_Old/devel)
+  set(bspline_surface_SOURCE_PREFIX /media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src/bspline_surface)
+  set(bspline_surface_DEVEL_PREFIX /media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/devel)
   set(bspline_surface_INSTALL_PREFIX "")
   set(bspline_surface_PREFIX ${bspline_surface_DEVEL_PREFIX})
 else()
   set(bspline_surface_SOURCE_PREFIX "")
   set(bspline_surface_DEVEL_PREFIX "")
-  set(bspline_surface_INSTALL_PREFIX /media/taole/Elements/bsp_work/BspSlim_Old/install)
+  set(bspline_surface_INSTALL_PREFIX /media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/install)
   set(bspline_surface_PREFIX ${bspline_surface_INSTALL_PREFIX})
 endif()
 
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /media/taole/Elements/bsp_work/BspSlim_Old/install/lib;/opt/ros/noetic/lib)
+    foreach(path /media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/install/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

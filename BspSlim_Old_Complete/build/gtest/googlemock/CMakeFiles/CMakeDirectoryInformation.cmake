@@ -3,7 +3,7 @@
 
 # Relative path conversion top directories.
 set(CMAKE_RELATIVE_PATH_TOP_SOURCE "/usr/src/googletest")
-set(CMAKE_RELATIVE_PATH_TOP_BINARY "/media/taole/Elements/bsp_work/BspSlim_Old/build")
+set(CMAKE_RELATIVE_PATH_TOP_BINARY "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/build")
 
 # Force unix paths in dependencies.
 set(CMAKE_FORCE_UNIX_PATHS 1)

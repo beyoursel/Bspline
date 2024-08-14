@@ -25,7 +25,6 @@ BspSurface::BspSurface(const std::vector<std::vector<Point>>& cn_point, int k)
 
     }
 
-    
     GetActualKnotSpan(knot_x_, knot_y_);
 
 }
@@ -298,6 +297,13 @@ void BspSurface::GetActualKnotSpan(std::vector<double>& knot_x, std::vector<doub
                 Point temp = CalPos(u, v);
                 knot_y.push_back(temp.y);
             }
+        }
+
+        for (auto& k_xx: knot_x) {
+            std::cout << k_xx << std::endl;
+        }
+        for (auto& k_yy: knot_y) {
+            std::cout << k_yy << std::endl;
         }
 
 }

@@ -1,6 +1,6 @@
 file(REMOVE_RECURSE
-  "/media/taole/Elements/bsp_work/BspSlim_Old/devel/lib/bspline_surface/bsp_test"
-  "/media/taole/Elements/bsp_work/BspSlim_Old/devel/lib/bspline_surface/bsp_test.pdb"
+  "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/devel/lib/bspline_surface/bsp_test"
+  "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/devel/lib/bspline_surface/bsp_test.pdb"
   "CMakeFiles/bsp_test.dir/src/bsp_test.cpp.o"
   "CMakeFiles/bsp_test.dir/src/bspline.cpp.o"
   "CMakeFiles/bsp_test.dir/src/bspline_api.cpp.o"

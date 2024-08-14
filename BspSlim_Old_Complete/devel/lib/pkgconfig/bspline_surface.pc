@@ -1,8 +1,8 @@
-prefix=/media/taole/Elements/bsp_work/BspSlim_Old/devel
+prefix=/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/devel
 
 Name: bspline_surface
 Description: Description of bspline_surface
 Version: 0.0.0
-Cflags: -I/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/include
+Cflags: -I/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src/bspline_surface/include
 Libs: -L${prefix}/lib -lptc_demo
 Requires: pcl_msgs pcl_ros roscpp rospy std_msgs pcl_conversions

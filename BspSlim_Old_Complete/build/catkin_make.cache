@@ -1,2 +1,2 @@
 bspline_surface
--DCATKIN_DEVEL_PREFIX=/media/taole/Elements/bsp_work/BspSlim_Old/devel -DCMAKE_INSTALL_PREFIX=/media/taole/Elements/bsp_work/BspSlim_Old/install -G Unix Makefiles
+-DCATKIN_DEVEL_PREFIX=/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/devel -DCMAKE_INSTALL_PREFIX=/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/install -G Unix Makefiles

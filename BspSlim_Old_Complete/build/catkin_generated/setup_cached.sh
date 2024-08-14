@@ -7,7 +7,10 @@
 # new environment variables
 
 # modified environment variables
-export CMAKE_PREFIX_PATH="/media/taole/Elements/bsp_work/BspSlim_Old/devel:$CMAKE_PREFIX_PATH"
-export PWD='/media/taole/Elements/bsp_work/BspSlim_Old/build'
-export ROSLISP_PACKAGE_DIRECTORIES='/media/taole/Elements/bsp_work/BspSlim_Old/devel/share/common-lisp'
-export ROS_PACKAGE_PATH="/media/taole/Elements/bsp_work/BspSlim_Old/src:$ROS_PACKAGE_PATH"
+export CMAKE_PREFIX_PATH="/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/devel:$CMAKE_PREFIX_PATH"
+export LD_LIBRARY_PATH='/opt/ros/noetic/lib:/usr/local/cuda/lib64:/opt/MVS/lib/64:/opt/MVS/lib/32:/opt/MVS/lib/64:/opt/MVS/lib/32:/opt/MVS/lib/64:/opt/MVS/lib/32:/opt/MVS/lib/64:/opt/MVS/lib/32'
+export PKG_CONFIG_PATH='/opt/ros/noetic/lib/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/lib/pkgconfig'
+export PWD='/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/build'
+export PYTHONPATH='/opt/ros/noetic/lib/python3/dist-packages:/media/taole/ssd1/coding_frame/AB3DMOT:/media/taole/ssd1/coding_frame/AB3DMOT/Xinshuo_PyToolbox'
+export ROSLISP_PACKAGE_DIRECTORIES='/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/devel/share/common-lisp'
+export ROS_PACKAGE_PATH="/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src:$ROS_PACKAGE_PATH"

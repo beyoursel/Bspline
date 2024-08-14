@@ -1,8 +1,8 @@
-# Install script for directory: /media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface
+# Install script for directory: /media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src/bspline_surface
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/media/taole/Elements/bsp_work/BspSlim_Old/install")
+  set(CMAKE_INSTALL_PREFIX "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -38,17 +38,17 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/media/taole/Elements/bsp_work/BspSlim_Old/build/bspline_surface/catkin_generated/installspace/bspline_surface.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/build/bspline_surface/catkin_generated/installspace/bspline_surface.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/bspline_surface/cmake" TYPE FILE FILES
-    "/media/taole/Elements/bsp_work/BspSlim_Old/build/bspline_surface/catkin_generated/installspace/bspline_surfaceConfig.cmake"
-    "/media/taole/Elements/bsp_work/BspSlim_Old/build/bspline_surface/catkin_generated/installspace/bspline_surfaceConfig-version.cmake"
+    "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/build/bspline_surface/catkin_generated/installspace/bspline_surfaceConfig.cmake"
+    "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/build/bspline_surface/catkin_generated/installspace/bspline_surfaceConfig-version.cmake"
     )
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/bspline_surface" TYPE FILE FILES "/media/taole/Elements/bsp_work/BspSlim_Old/src/bspline_surface/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/bspline_surface" TYPE FILE FILES "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/src/bspline_surface/package.xml")
 endif()
 

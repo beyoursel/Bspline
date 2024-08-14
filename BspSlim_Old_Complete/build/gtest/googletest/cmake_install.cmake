@@ -2,7 +2,7 @@
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/media/taole/Elements/bsp_work/BspSlim_Old/install")
+  set(CMAKE_INSTALL_PREFIX "/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 

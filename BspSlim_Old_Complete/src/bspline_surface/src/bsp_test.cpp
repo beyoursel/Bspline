@@ -127,11 +127,11 @@ int main(int argc, char** argv) {
 
     auto start = std::chrono::high_resolution_clock::now();
 
-    BspFitting bsp_fit(filtered_ground, 10.0, 3);
-
+    BspFitting bsp_fit(filtered_ground, 10.0, 2); // 2阶
+//  -123.354 -110.398
     auto end = std::chrono::high_resolution_clock::now();
 
-    Point ptc = bsp_fit.GetBsplinePoint(35, 35); // test
+    Point ptc = bsp_fit.GetBsplinePoint(-95, -85); // test
 
     auto end1 = std::chrono::high_resolution_clock::now();
 

@@ -3,7 +3,7 @@
 
 # since this file is sourced either use the provided _CATKIN_SETUP_DIR
 # or fall back to the destination set at configure time
-: ${_CATKIN_SETUP_DIR:=/media/taole/Elements/bsp_work/BspSlim_Old/devel}
+: ${_CATKIN_SETUP_DIR:=/media/taole/ssd1/letaotao/BspSurface/Bspline/BspSlim_Old_Complete/devel}
 CATKIN_SETUP_UTIL_ARGS="--extend --local"
 . "$_CATKIN_SETUP_DIR/setup.sh"
 unset CATKIN_SETUP_UTIL_ARGS
