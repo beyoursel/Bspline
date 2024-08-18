@@ -1,8 +1,0 @@
-prefix=/media/mydisk/Doc/daily_work/work_tg/Bspline/Bsp/install
-
-Name: bspline_surface
-Description: Description of bspline_surface
-Version: 0.0.0
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib -lptc_demo
-Requires: pcl_msgs pcl_ros roscpp rospy std_msgs pcl_conversions
