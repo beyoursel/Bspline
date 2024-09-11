@@ -5,7 +5,7 @@ A repo. which used to generate 3d surface using bspline.
 <img src="surf_ctpts.png" />
 
 ## Depend
-- PCL
+- Eigen/Nanoflann
 
 ## Usage
 ```
