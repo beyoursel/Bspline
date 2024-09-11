@@ -10,7 +10,7 @@ A repo. which used to generate 3d surface using bspline.
 ## Usage
 ```
 git clone "repo"
-cd bspline_surface
+cd bspline_surface_no_pcl
 mkdir build && cd build
 cmake ..
 make
