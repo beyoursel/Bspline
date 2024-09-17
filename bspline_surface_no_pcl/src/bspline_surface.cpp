@@ -30,7 +30,7 @@ void BspSurface::SetData(const PointCloud &input, double perc, int kn) {
   }
 
   double range_x = max_pt.position.x() - min_pt.position.x();
-  double range_y = max_pt.position.x() - min_pt.position.y();
+  double range_y = max_pt.position.y() - min_pt.position.y();
   ct_x_num_ = std::floor(range_x / grid_size_) + 1;
   ct_y_num_ = std::floor(range_y / grid_size_) + 1;
   std::vector<std::vector<PointCloud>> grids(
