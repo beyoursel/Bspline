@@ -1,3 +1,0 @@
-/home/topxgun/job_topxgun/develop/bspline_surface/build/CMakeFiles/rebuild_cache.dir
-/home/topxgun/job_topxgun/develop/bspline_surface/build/CMakeFiles/edit_cache.dir
-/home/topxgun/job_topxgun/develop/bspline_surface/build/CMakeFiles/bspline_surface.dir
